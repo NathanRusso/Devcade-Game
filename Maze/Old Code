@@ -1,0 +1,653 @@
+    /*
+    static class Globals
+    {
+        
+        public static ValueTuple<int, List<string>>[] wall_value_matches = new ValueTuple<int, List<string>>[16] {
+                (0, new List<string> {}),
+                (1, new List<string> {"N"}),
+                (2, new List<string> {"E"}),
+                (3, new List<string> {"S"}),
+                (4, new List<string> {"W"}),
+                (5, new List<string> {"N", "E"}),
+                (6, new List<string> {"N", "S"}),
+                (7, new List<string> {"N", "W"}),
+                (8, new List<string> {"E", "S"}),
+                (9, new List<string> {"E", "W"}),
+                (10, new List<string> {"S", "W"}),
+                (11, new List<string> {"N", "E", "S"}),
+                (12, new List<string> {"N", "E", "W"}),
+                (13, new List<string> {"N", "S", "W"}),
+                (14, new List<string> {"E", "S", "W"}),
+                (15, new List<string> {"N", "E", "S", "W"})};
+
+		public static HashSet<int> no_north_wall = new HashSet<int> {0, 2, 3, 4, 8, 9, 10, 14};
+        public static HashSet<int> no_east_wall = new HashSet<int> {0, 1, 3, 4, 6, 7, 10, 13};
+        public static HashSet<int> no_south_wall = new HashSet<int> {0, 1, 2, 4, 5, 7, 9, 12};
+        public static HashSet<int> no_west_wall = new HashSet<int> {0, 1, 2, 3, 5, 6, 7, 11};
+    }
+    */
+
+    /*
+    internal class Block
+	{
+        internal int y_index;
+        internal int x_index;
+        internal nBlock north_pointer;
+        internal nBlock east_pointer;
+        internal nBlock south_pointer;
+        internal nBlock west_pointer;
+
+        public nBlock (int _y_index, int _x_index)
+		{
+			y_index = _y_index;
+			x_index = _x_index;
+            north_pointer = null;
+			east_pointer = null;
+			south_pointer = null;
+			west_pointer = null;
+		}
+
+
+		public List<string> generate_direction_list()
+		{
+			List<string> current_letters_list = new List<string> {};
+			if (north_pointer is not null) {current_letters_list.Add("N");}
+			if (east_pointer is not null) {current_letters_list.Add("E");}
+			if (south_pointer is not null) {current_letters_list.Add("S");}
+			if (west_pointer is not null) {current_letters_list.Add("W");}
+			return current_letters_list;
+		}
+		
+    }
+	*/
+
+    /*
+    internal class MazeChain
+    {
+        internal nBlock head;
+
+		// I don't have a next
+        internal nBlock GetLastNode(MazeChain current_chain)
+        {
+            nBlock temp = current_chain.head;
+            while (temp.next != null)
+            {
+                temp = temp.next;
+            }
+            return temp;
+        }
+
+        internal void InsertLast(MazeChain current_chain, int y_index, int x_index)
+        {
+            nBlock new_nBlock = new nBlock(y_index, x_index);
+            if (current_chain.head is null)
+            {
+                current_chain.head = new_nBlock;
+                return;
+            }
+            nBlock lastNode = GetLastNode(current_chain);
+
+            lastNode.next = new_nBlock;
+        }
+		
+    }
+	*/
+    
+            /*
+            int[,] wallGrid = new int[56, 27];
+            for (int y = 0; y < 56; y++) {
+                for (int x = 0; x < 27; x++) {
+                    wallGrid[y, x] = 0;
+                }
+            }
+
+            Debug.WriteLine(wallGrid[5, 7]);
+            List<string> current_letters_list = new List<string> {"N", "E"};
+			Debug.WriteLine(current_letters_list.Count);
+            set_grid_value(current_letters_list, wallGrid, 5, 7);
+            Debug.WriteLine(wallGrid[5, 7]);
+
+			Debug.WriteLine("It is " + check_for_wall("N", wallGrid, 4, 7) + " that a wall is present");
+            */
+
+        /*
+		static void set_grid_value(List<string> letter_list, int[,] grid, int y_index, int x_index)
+		{
+			switch (letter_list.Count)
+			{
+				case 4:
+                    grid[y_index, x_index] = 15;
+					break;
+				case 3:
+					for (int i = 11; i < 15; i++) {
+						if (letter_list.SequenceEqual(Globals.wall_value_matches[i].Item2)) {
+                            grid[y_index, x_index] = Globals.wall_value_matches[i].Item1;
+                            break;}}
+					break;
+				case 2:
+                    for (int i = 5; i < 11; i++) {
+                        if (letter_list.SequenceEqual(Globals.wall_value_matches[i].Item2)) {
+                            grid[y_index, x_index] = Globals.wall_value_matches[i].Item1;
+                            break;}}
+                    break;
+                case 1:
+                    for (int i = 1; i < 5; i++) {
+                        if (letter_list.SequenceEqual(Globals.wall_value_matches[i].Item2)) {
+                            grid[y_index, x_index] = Globals.wall_value_matches[i].Item1;
+                            break;}}
+                    break;
+                default:
+					break;
+			}
+		}
+		
+		static Boolean check_for_wall(string direction, int[,] grid, int y_index, int x_index)
+		{
+			if (direction == "N") {return Globals.no_south_wall.Contains(grid[y_index + 1, x_index]);}
+			else if (direction == "E") {return Globals.no_west_wall.Contains(grid[y_index, x_index + 1]);}
+            else if (direction == "S") {return Globals.no_north_wall.Contains(grid[y_index - 1, x_index]);}
+            else if (direction == "W") {return Globals.no_east_wall.Contains(grid[y_index, x_index - 1]);}
+			return false;
+        }
+		*/
+
+        static HashSet<ValueTuple<int, int>> list_to_hash(List<ValueTuple<int, int>> list)
+        {
+            HashSet<ValueTuple<int, int>> hash = new HashSet<ValueTuple<int, int>> {};
+            for (int i = 0; i < list.Count; i++) {hash.Add(list[i]);}
+            return hash;
+        }
+
+        
+        // It edits te values of Blocks in blockGrid to lay the framework of a maze.
+        public List<ValueTuple<int, int>> generate_path(ValueTuple<int, int> start, 
+            List<ValueTuple<int, int>> used_points)
+		{
+            string direction = generate_random_direction();
+			if (direction == "N" && start.Item1 != 35) 
+			{
+                used_points.Add(start);
+                blockGrid[start.Item1, start.Item2].visited = true;
+                blockGrid[start.Item1, start.Item2].north_wall = false;
+                blockGrid[start.Item1 + 1, start.Item2].south_wall = false;
+				if (start.Item1 + 1 == end.Item1 && start.Item2 == end.Item2)
+				{
+                    used_points.Add(end);
+                    blockGrid[end.Item1, end.Item2].visited = true;
+                    return used_points;
+				}
+                else if (blockGrid[start.Item1 + 1, start.Item2].visited is true)
+                {
+                    return used_points;
+                }
+                else
+				{
+                    ValueTuple<int, int> new_start = new ValueTuple<int, int> (start.Item1 + 1, start.Item2);
+                    return generate_path(new_start, end, used_points);
+                }
+            }
+			else if (direction == "E" && start.Item2 != 15) 
+			{
+                used_points.Add(start);
+                blockGrid[start.Item1, start.Item2].visited = true;
+                blockGrid[start.Item1, start.Item2].east_wall = false;
+                blockGrid[start.Item1, start.Item2 + 1].west_wall = false;
+                if (start.Item2 + 1 == end.Item2 && start.Item1 == end.Item1)
+                {
+                    used_points.Add(end);
+                    blockGrid[end.Item1, end.Item2].visited = true;
+                    return used_points;
+                }
+                else if (blockGrid[start.Item1, start.Item2 + 1].visited is true)
+                {
+                    return used_points;
+                }
+                else
+                {
+                    ValueTuple<int, int> new_start = new ValueTuple<int, int>(start.Item1, start.Item2 + 1);
+                    return generate_path(new_start, end, used_points);
+                }
+
+            }
+            else if (direction == "S" && start.Item1 != 0) 
+			{
+                used_points.Add(start);
+                blockGrid[start.Item1, start.Item2].visited = true;
+                blockGrid[start.Item1, start.Item2].south_wall = false;
+                blockGrid[start.Item1 - 1, start.Item2].north_wall = false;
+                if (start.Item1 - 1 == end.Item1 && start.Item2 == end.Item2)
+                {
+                    used_points.Add(end);
+                    blockGrid[end.Item1, end.Item2].visited = true;
+                    return used_points;
+                }
+                else if (blockGrid[start.Item1 - 1, start.Item2].visited is true)
+                {
+                    return used_points;
+                }
+                else
+                {
+                    ValueTuple<int, int> new_start = new ValueTuple<int, int>(start.Item1 - 1, start.Item2);
+                    return generate_path(new_start, end, used_points);
+                }
+            }
+            else if (direction == "W" && start.Item2 != 0) 
+			{
+                used_points.Add(start);
+                blockGrid[start.Item1, start.Item2].visited = true;
+                blockGrid[start.Item1, start.Item2].west_wall = false;
+                blockGrid[start.Item1, start.Item2 - 1].east_wall = false;
+                if (start.Item2 - 1 == end.Item2 && start.Item1 == end.Item1)
+                {
+                    used_points.Add(end);
+                    game.blockGrid[end.Item1, end.Item2].visited = true;
+                    return used_points;
+                }
+                else if (blockGrid[start.Item1, start.Item2 - 1].visited is true)
+                {
+                    return used_points;
+                }
+                else
+                {
+                    ValueTuple<int, int> new_start = new ValueTuple<int, int>(start.Item1, start.Item2 - 1);
+                    return generate_path(new_start, end, used_points);
+                }
+            }
+			else
+			{
+                return generate_path(start, end, used_points);
+			}
+        }
+
+                    /*
+                    index_1 = visited_points.IndexOf(v);
+                    List<ValueTuple<int, int>> cut_list = new List<ValueTuple<int, int>> { };
+                    cut_list = visited_points;
+                    cut_list.RemoveRange(0, index_1 + 2);
+                    foreach (var c in cut_list)
+                    {
+                        if (v == c)
+                        {
+                            added_index = cut_list.IndexOf(c);
+                            index_2 = index_1 + 1 + added_index;
+                        }
+                        break;
+                    }
+                    break;
+                    */
+
+
+
+
+
+                        else if (i > 0 && i < collisions.Count - 1 && collisions[i].Item2 < collisions[i + 1].Item1 &&
+                            collisions[i].Item1 > collisions[i - 1].Item2)
+                        {
+                            updated_collisions.Add(collisions[i]);
+                            // i = (10, 20), i + 1 = (30, 40)
+                        }
+                        else if (i > 0 && i < collisions.Count - 1 && collisions[i].Item2 < collisions[i - 1].Item2)
+                        {
+                            // updated_collisions.Add(collisions[i - 1]);
+                            collisions.Remove(collisions[i]);
+                            i--;
+                            // i - 1 = (10, 20), i = (12, 18)
+                        }
+                        else if (i > 0 && i < collisions.Count - 1 && collisions[i].Item2 > collisions[i - 1].Item2
+                            && collisions[i].Item2 > collisions[i + 1].Item1)
+                        {
+                            collisions.Remove(collisions[i]);
+                            i--;
+                            // i - 1 = (10, 20), i = (15, 30)
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+        // It returns a block's values back to the inital ones.
+        public void reset_block_value(ValueTuple<int, int> point)
+        {
+            blockGrid[point.Item1, point.Item2].north_wall = true;
+            blockGrid[point.Item1, point.Item2].east_wall = true;
+            blockGrid[point.Item1, point.Item2].south_wall = true;
+            blockGrid[point.Item1, point.Item2].west_wall = true;
+            blockGrid[point.Item1, point.Item2].visited = false;
+            blockGrid[point.Item1, point.Item2].in_the_mzae = false;
+        }
+
+
+        /*
+        public ValueTuple<int, int> find_largest_gap(List<ValueTuple<int, int>> coll)
+        {
+            List<ValueTuple<int, int>> coll_1 = coll;
+            for (int i = 0; i < coll_1.Count; i++) {
+                for (int v = i + 1; v < coll_1.Count; v++) {
+                    if (coll_1[i].Item2 > coll_1[v].Item2) {
+                        coll_1.Remove(coll_1[v]);
+                        v--;
+                    }
+                }
+            }
+
+            ValueTuple<int, int> largest_gap = coll_1[0];
+            foreach (var point in coll_1) {
+                if ((point.Item2 - point.Item1) > (coll_1[0].Item2 - coll_1[0].Item1)) {
+                    largest_gap = point;
+                }
+            }
+
+            return largest_gap;
+        }
+        */
+
+        /* This function takes a in list of tupels.
+         * Each tuple is a pair of indexes that had the same point in the list of visited points.
+         * It accounts for different combinations of 3 types of collision pairs.
+            1. Tuple A is completly seperate from Tuple B. 
+            2. Tuple A contaisn the first value of Tuple B, but not the second.
+            3. Tuple A contains both values of Tuple B.
+         * It returns a list if collisions were there are only type 1 tupels.   */
+        
+        /*
+        public List<ValueTuple<int, int>> update_collisions(List<ValueTuple<int, int>> coll)
+        {
+            List<ValueTuple<int, int>> updated_collisions = new List<ValueTuple<int, int>> { };
+            List<ValueTuple<int, int>> less_than_coll = new List<ValueTuple<int, int>> { };
+            List<ValueTuple<int, int>> greater_than_coll = new List<ValueTuple<int, int>> { };
+
+            ValueTuple<int, int> largest_gap = find_largest_gap(coll);
+            updated_collisions.Add(largest_gap);
+
+            for (int i = 0; i < coll.Count; i++)
+            {
+                if (coll[i].Item2 < largest_gap.Item1)
+                {
+                    less_than_coll.Add(coll[i]);
+                }
+                else if (coll[i].Item1 > largest_gap.Item2)
+                {
+                    greater_than_coll.Add(coll[i]);
+                }
+                else
+                {
+                    coll.Remove(coll[i]);
+                    i--;
+                }
+            }
+
+            updated_collisions.Add(find_largest_gap(less_than_coll));
+            updated_collisions.Add(find_largest_gap(greater_than_coll));
+
+
+
+            
+            if (coll.Count == 2)
+            {
+                if (coll[0].Item2 < coll[1].Item1)
+                {
+                    updated_collisions.Add(coll[0]);
+                    updated_collisions.Add(coll[1]);
+                }
+                else if (coll[0].Item2 > coll[1].Item2)
+                {
+                    updated_collisions.Add(coll[0]);
+                }
+                else
+                {
+                    updated_collisions.Add(coll[1]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < coll.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        if (coll[i].Item2 < coll[i + 1].Item1 || coll[i].Item2 > coll[i + 1].Item2)
+                        {
+                            updated_collisions.Add(coll[i]);
+                        }
+                        else { continue; }
+                    }
+                    else if (i == coll.Count - 1)
+                    {
+                        if (coll[i].Item2 > coll[i - 1].Item2)
+                        {
+                            updated_collisions.Add(coll[i]);
+                        }
+                        else { continue; }
+                    }
+                    else if (coll[i - 1].Item2 < coll[i].Item1)
+                    {
+                        if (coll[i].Item2 < coll[i + 1].Item1 || coll[i].Item2 > coll[i + 1].Item2)
+                        {
+                            updated_collisions.Add(coll[i]);
+                        }
+                        else { continue; } // coll[i].Item2 < coll[i + 1].Item2
+                    }
+                    else if (coll[i - 1].Item2 > coll[i].Item2)
+                    {
+                        continue;
+                    }
+                    else // coll[i - 1].Item2 < coll[i].Item2
+                    {
+                        if (coll[i].Item2 < coll[i + 1].Item1 || coll[i].Item2 > coll[i + 1].Item2)
+                        {
+                            updated_collisions.Add(coll[i]);
+                        }
+                        else { continue; } // coll[i].Item2 < coll[i + 1].Item2
+                    }
+                }
+            }
+            
+            return updated_collisions;
+        }
+        */
+
+
+
+        // UPDATE
+        /* This function gets a list of the shortest path of points from start to finish in a list.
+         * It checks if there are any collisions and adds them to a list.
+         *     - If there are no collisions, it returns the given list. Otherwise...
+         * It creates a list of tupels which contain indexes of the first and last occourances of a point.
+         * It then calls update_collisions to remove overlapping collisions.
+         * It then loo[s throught all of the visited values.
+         *     ~ If the index i is at the second item in a tuple, it moves onto the next tuple.
+         *     - If i equals the current tuple item 1, the block at the point has a wall value reverted.
+         *     - If i is between tuple items 1 and 2, the block at the point is reset.
+         *     - Otherwise, it is added to the list of points to be added into the maze.
+         * It then returns the list of points to be added to the maze.     */ 
+        /*
+        public List<ValueTuple<int, int>> optimize_path(List<ValueTuple<int, int>> visited_points)
+        {
+            int count = visited_points.Count;
+            var distinct = visited_points.Distinct();
+            List<ValueTuple<int, int>> distinct_list = distinct.ToList();
+            int distinct_count = distinct_list.Count;
+
+            if (count != distinct_count)
+            {
+                List<ValueTuple<int, int>> coll = new List<ValueTuple<int, int>> { }; // Collisions
+                HashSet<ValueTuple<int, int>> added = new HashSet<ValueTuple<int, int>> { };
+                int index_1 = 0;
+                int index_2 = 0;
+                foreach (var v in visited_points)
+                {
+                    index_1 = visited_points.IndexOf(v);
+                    index_2 = visited_points.LastIndexOf(v);
+                    ValueTuple<int, int> match = (index_1, index_2);
+                    if (index_1 != index_2 && added.Contains(match) is false)
+                    {
+                        coll.Add(match);
+                        added.Add(match);
+                    }
+                }
+
+                foreach (var point in coll)
+                {
+                    Debug.WriteLine("C " + point);
+                }
+
+                List<ValueTuple<int, int>> updated_coll = new List<ValueTuple<int, int>> { };
+                updated_coll = update_collisions(coll);
+
+                Debug.WriteLine("The number of items in visited_points is " + visited_points.Count);
+                Debug.WriteLine("The number of items in coll is " + coll.Count);
+                Debug.WriteLine("The number of items in updated_collisions is " + updated_coll.Count);
+
+
+
+                foreach (var point in updated_coll)
+                {
+                    Debug.WriteLine("U " + point);
+                }
+
+                List<ValueTuple<int, int>> added_to_maze = new List<ValueTuple<int, int>> { };
+
+                int coll_index = 0;
+                for (int i = 0; i < visited_points.Count; i++)
+                {
+                    if (i > updated_coll[coll_index].Item2 && coll_index != updated_coll.Count - 1)
+                    {
+                        coll_index++;
+                    }
+                    if (i == updated_coll[coll_index].Item1)
+                    {
+                        continue;
+                    }
+                    else if (updated_coll[coll_index].Item1 < i && i < updated_coll[coll_index].Item2)
+                    {
+                        blockGrid[visited_points[i].Item1, visited_points[i].Item2].reset();
+                    }
+                    else if (i == updated_coll[coll_index].Item2 && i < visited_points.Count - 1)
+                    {
+                        blockGrid[visited_points[i].Item1, visited_points[i].Item2].reset();
+                        blockGrid[visited_points[i].Item1, visited_points[i].Item2].visited = true;
+                        if (visited_points[i].Item1 < visited_points[i + 1].Item1)
+                        {
+                            blockGrid[visited_points[i].Item1, visited_points[i].Item2].north_wall = false;
+                        }
+                        else if (visited_points[i].Item1 > visited_points[i + 1].Item1)
+                        {
+                            blockGrid[visited_points[i].Item1, visited_points[i].Item2].south_wall = false;
+                        }
+                        else if (visited_points[i].Item2 < visited_points[i + 1].Item2)
+                        {
+                            blockGrid[visited_points[i].Item1, visited_points[i].Item2].east_wall = false;
+                        }
+                        else // visited_points[i].Item2 > visited_points[i + 1].Item2)
+                        {
+                            blockGrid[visited_points[i].Item1, visited_points[i].Item2].west_wall = false;
+                        }
+                        added_to_maze.Add(visited_points[i]);
+                    }
+                    else
+                    {
+                        added_to_maze.Add(visited_points[i]);
+                    }
+                }
+                Debug.WriteLine("The number of items in added_to_maze is " + added_to_maze.Count);
+                return added_to_maze;
+            }
+            else
+            {
+                Debug.WriteLine("No duplicates.");
+                Debug.WriteLine("The number of items in added_to_maze is " + visited_points.Count);
+                return visited_points;
+            }
+        }
+        */
+
+
+
+
+                            
+                    /*
+                    if (completed == false && i == index)
+                    {
+                        // blockGrid[updated_points[i].Item1, updated_points[i].Item2].reset();
+                        
+                        if (i > 0)
+                        {
+                            re_add_wall_value(updated_points[i], updated_points[i - 1]);
+                        }
+                        
+                        revert_wall_value_next(updated_points[i], updated_points[i + 1]);
+                        revert_wall_value_last(updated_points[i], updated_points[updated_points.Count - 1]);
+                        updated_points.RemoveAt(i);
+                        i--;
+                        completed = true;
+                    }
+                    else if (i >= index)
+                    {
+                        blockGrid[updated_points[i].Item1, updated_points[i].Item2].reset();
+                        updated_points.RemoveAt(i);
+                        i--;
+                    }
+                    */
+
+                                            // revert_wall_value_next(visited_points[i], visited_points[i + 1]);
+                        // revert_wall_value_last(visited_points[i], visited_points[visited_points.Count - 1]);
+
+
+
+        // It reverts a block's wall value based on the position of the next block.
+        public void revert_wall_value_next(ValueTuple<int, int> current, ValueTuple<int, int> next)
+        {
+            if (current.Item1 + 1 == next.Item1)
+            {
+                blockGrid[current.Item1, current.Item2].north_wall = true;
+            }
+            else if (current.Item2 + 1 == next.Item2)
+            {
+                blockGrid[current.Item1, current.Item2].east_wall = true;
+            }
+            else if (current.Item1 - 1 == next.Item1)
+            {
+                blockGrid[current.Item1, current.Item2].south_wall = true;
+            }
+            else if (current.Item2 - 1 == next.Item2) 
+            { 
+                blockGrid[current.Item1, current.Item2].west_wall = true;
+            }
+        }
+
+        // It reverts a block's wall value based on the wall state of the last block.
+        public void revert_wall_value_last(ValueTuple<int, int> current, ValueTuple<int, int> last)
+        {
+            if (blockGrid[last.Item1, last.Item2].north_wall is false)
+            {
+                blockGrid[current.Item1, current.Item2].south_wall = true;
+            }
+            else if (blockGrid[last.Item1, last.Item2].east_wall is false)
+            {
+                blockGrid[current.Item1, current.Item2].west_wall = true;
+            }
+            else if (blockGrid[last.Item1, last.Item2].south_wall is false)
+            {
+                blockGrid[current.Item1, current.Item2].north_wall = true;
+            }
+            else if (blockGrid[last.Item1, last.Item2].west_wall is false)
+            {
+                blockGrid[current.Item1, current.Item2].east_wall = true;
+            }
+        }
+
+
+        
+            if (string.IsNullOrEmpty(delete))
+            {
+                int index = random.Next(0, 4);
+                return directions[index];
+            }
+            else // This condion prevent movemnts that go directly in reverse. 
+            {
+                if (delete == "N") { directions.Remove("S"); }
+                else if (delete == "E") { directions.Remove("W"); }
+                else if (delete == "S") { directions.Remove("N"); }
+                else { directions.Remove("E"); }
+                int index = random.Next(0, 3);
+                return directions[index];
+            }

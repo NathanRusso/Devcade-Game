@@ -12,7 +12,7 @@ using System.Data.Common;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 
-// MAKE SURE YOU RENAME ALL PROJECT FILES FROM DevcadeGame TO YOUR YOUR GAME NAME
+
 namespace DevcadeGame
 {
     // An enum to establish which state the game is currently in.
@@ -43,6 +43,9 @@ namespace DevcadeGame
         // This declares the current position of the arrow in the loading screen.
         private Rectangle vCurrentPosition;
 
+        // This declares the current position of the arrow in the maze screen.
+        private Rectangle arrowPosition;
+
         // This declares the vectors needed to draw the different possible maze sizes in the loading screen.
         private Vector2 vPosition_50_25;
         private Vector2 vPosition_40_20;
@@ -54,8 +57,9 @@ namespace DevcadeGame
         private Vector2 vPosition_4_2;
         private Vector2 vPosition_2_1;
 
-        // This declares list of integers that must be used depending on if the game is running in Devcade.
-        private List<int> selectedList;
+        // This declares both list of variables that must be used depending on if the game is running in Devcade.
+        private List<int> selectedList1;
+        private List<String> selectedList2;
 
         // This declares the height and width of the maze in pixels.
         private int mazePixelHeight;
@@ -94,6 +98,9 @@ namespace DevcadeGame
         // A BlockGrid with a 2D array of Blocks which makes up the grid for the maze.
         private BlockGrid blockGrid1;
 
+        // This declares the block value in the grid based off of the current position.
+        private Block currentBlock;
+
         // The size of the block for the current maze, along with a smaller version.
         private int blockSizeC;
         private int blockSize9;
@@ -105,6 +112,16 @@ namespace DevcadeGame
         private int topRightY;
         private int bottomLeftX;
         private int bottomLeftY;
+
+        // These are integers and a string set at your current position and direction.
+        // These will change as you move.
+        private int x_index;
+        private int y_index;
+        private string direction;
+
+        // These are integers which will be used to convert pixel position to grid position.
+        private int converted_x;
+        private int converted_y;
 
         // This declares the Texture2D needed to draw the maze lines.
         private Texture2D line;
@@ -150,15 +167,15 @@ namespace DevcadeGame
         private Vector2 winVector;
         private Vector2 restartVector;
 
-        // These are integers and a string set at your current position and direction.
-        // These will change as you move.
-        private int x_index;
-        private int y_index;
-        private string direction;
+        // This declares the display texts that depend on if the game is running in Devcade.
+        private String text3;
+        private String text7;
 
-        // These are integers which will be used to convert pixel position to grid position.
-        private int converted_x;
-        private int converted_y;
+        // This declares 3 of the texts that show the possible maze sizes.
+        // The options are slightly different depending on if the game is running in Devcade.
+        private String mazeSizeText1;
+        private String mazeSizeText2;
+        private String mazeSizeText3;
 
 
         public Game1 game
@@ -183,6 +200,7 @@ namespace DevcadeGame
             // 800 x 400 pixels or 1000 x 2000 pixels
             blockGrid1 = new BlockGrid(rows, columns, mazePixelWidth);
             /* Y by X, with block sizes.
+             * 80 by 40, with a block size of 10 --> 25
              * 50 by 25, with a block size of 16 --> 40
              * 40 by 20, with a block size of 20 --> 50 
              * 32 by 16, with a block size of 25 ISSUE FOR UPSCALE 62.5
@@ -261,56 +279,72 @@ namespace DevcadeGame
             line = new Texture2D(GraphicsDevice, 1, 1);
             line.SetData(new[] { Color.White });
 
-            // This initializes list of integers that must be used depending on if the game is running in Devcade.
+            // This initializes both list of variables that must be used
+            // depending on if the game is running in Devcade.
             if (windowSize.Width == 420) // The game is on my computer.
-            { 
-                selectedList = new List<int> { 800, 400, 10, 410, 150, 950, 210, 130, 90, 847, 127, 
-                                               7, 4, 3, 407, 0, 40, 70, 105}; 
+            {
+                selectedList1 = new List<int> { 800, 400, 10, 410, 150, 950, 210, 130, 90, 847, 127,
+                                               7, 4, 3, 407, 0, 40, 70, 105};
+                selectedList2 = new List<string> { "Select the maze size.", "Press 'Space' for another maze.", 
+                    "50 by 25", "40 by 20", "32 by 16", "fontTitle", "fontCreator", "fontCompletedMaze" };
             }
             else // The game is on Devcade.
             { 
-                selectedList = new List<int> { 2000, 1000, 40, 1040, 375, 2375, 540, 325, 225, 2122, 322,
-                                               31, 12, 9, 1021, 0, 100, 175, 260}; 
+                selectedList1 = new List<int> { 2000, 1000, 40, 1040, 375, 2375, 540, 325, 225, 2122, 322,
+                                               31, 12, 9, 1021, 0, 100, 175, 260};
+                selectedList2 = new List<string> { "Press A1 to select a maze size.", "Press Menu1 for another maze.",
+                    "80 by 40", "50 by 25", "40 by 20", "fontTitle2", "fontCreator2", "fontCompletedMaze2" } ;
             }
 
             // This initializes the height and width of the maze in pixels.
-            mazePixelHeight = selectedList[0];
-            mazePixelWidth = selectedList[1];
+            mazePixelHeight = selectedList1[0];
+            mazePixelWidth = selectedList1[1];
 
             // This initializes the start and end pixel locations for the x-axis and y-axis of the maze.
-            mazePixelXStart = selectedList[2];
-            mazePixelXEnd = selectedList[3];
-            mazePixelYStart = selectedList[4];
-            mazePixelYEnd = selectedList[5];
+            mazePixelXStart = selectedList1[2];
+            mazePixelXEnd = selectedList1[3];
+            mazePixelYStart = selectedList1[4];
+            mazePixelYEnd = selectedList1[5];
 
             // This initializes the middle point on the x-axis.
-            screenPixelXCenter = selectedList[6];
+            screenPixelXCenter = selectedList1[6];
 
             // This initializes the y-axis start and distance between for drawing maze sizes on the loading screen.
-            loadScreenSizeStart = selectedList[7];
-            loadScreenSizeDisplacement = selectedList[8];
+            loadScreenSizeStart = selectedList1[7];
+            loadScreenSizeDisplacement = selectedList1[8];
 
             // This initializes the y-axis current, start, and end position of the arrow sprite in the loading screen.
-            loadScreenArrowCurrent = selectedList[9]; // This changes
-            loadScreenArrowStart = selectedList[9];
-            loadScreenArrowEnd = selectedList[10];
+            loadScreenArrowCurrent = selectedList1[9]; // This changes
+            loadScreenArrowStart = selectedList1[9];
+            loadScreenArrowEnd = selectedList1[10];
 
             // This initializes values need to help when drawing the border of the maze.
-            borderPixel1 = selectedList[11];
-            borderPixel2 = selectedList[12];
-            borderPixel3 = selectedList[13];
-            borderPixel4 = selectedList[14];
+            borderPixel1 = selectedList1[11];
+            borderPixel2 = selectedList1[12];
+            borderPixel3 = selectedList1[13];
+            borderPixel4 = selectedList1[14];
 
             // This initializes the y-axis positions for different strings that need to be drawn
-            drawPositionY1 = selectedList[15];
-            drawPositionY2 = selectedList[16];
-            drawPositionY3 = selectedList[17];
-            drawPositionY4 = selectedList[18];
+            drawPositionY1 = selectedList1[15];
+            drawPositionY2 = selectedList1[16];
+            drawPositionY3 = selectedList1[17];
+            drawPositionY4 = selectedList1[18];
 
-            // These initializes the sprites/images I have.
-            titleFont = Content.Load<SpriteFont>("fontTitle");
-            creatorFont = Content.Load<SpriteFont>("fontCreator");
-            otherFont = Content.Load<SpriteFont>("fontCompletedMaze");
+            // This initializes the display texts that depend on if the game is running in Devcade.
+            text3 = selectedList2[0];
+            text7 = selectedList2[1];
+
+            // This initializes 3 of the texts that show the possible maze sizes.
+            mazeSizeText1 = selectedList2[2];
+            mazeSizeText2 = selectedList2[3];
+            mazeSizeText3 = selectedList2[4];
+
+            // These initializes the sprites/images I have that change if the game is on Devcade.
+            titleFont = Content.Load<SpriteFont>(selectedList2[5]);
+            creatorFont = Content.Load<SpriteFont>(selectedList2[6]);
+            otherFont = Content.Load<SpriteFont>(selectedList2[7]);
+
+            // These initializes the other sprites/images I have.
             northArrow = Content.Load<Texture2D>("arrow_north");
             eastArrow = Content.Load<Texture2D>("arrow_east");
             southArrow = Content.Load<Texture2D>("arrow_south");
@@ -321,11 +355,11 @@ namespace DevcadeGame
             // This initializes the different widths of different displayed text. These are used to center text. 
             textWidth1 = (int)titleFont.MeasureString("Dev-Maze").Length();
             textWidth2 = (int)creatorFont.MeasureString("By  Nathan Russo").Length();
-            textWidth3 = (int)otherFont.MeasureString("Select the maze size.").Length();
+            textWidth3 = (int)otherFont.MeasureString(text3).Length();
             textWidth4 = (int)otherFont.MeasureString("Move to the stop sign to win.").Length();
             textWidth5 = (int)otherFont.MeasureString("Good Luck!").Length();
             textWidth6 = (int)otherFont.MeasureString("You win! Close the game.").Length();
-            textWidth7 = (int)otherFont.MeasureString("Press 'Space' for another maze.").Length();
+            textWidth7 = (int)otherFont.MeasureString(text7).Length();
 
             // This initializes the Vectors needed to draw the title, the creator, and other text for the game.
             titleVector = new Vector2((windowSize.Width - textWidth1) / 2, drawPositionY1);
@@ -423,7 +457,7 @@ namespace DevcadeGame
                 }
 
                 // This initializes the current position of the arrow in the loading screen.
-                vCurrentPosition = new Rectangle(mazePixelYStart, loadScreenArrowCurrent, 40, 40);
+                vCurrentPosition = new Rectangle(mazePixelYStart, loadScreenArrowCurrent, drawPositionY2, drawPositionY2);
 
                 // This initializes the maze and changes the screen type if the user has selected a maze size.
                 if (Keyboard.GetState().IsKeyDown(Keys.Enter) || Input.GetButton(1, Input.ArcadeButtons.A1))
@@ -431,7 +465,7 @@ namespace DevcadeGame
                     // This calls initializeMaze() based off of the arrow's position.
                     switch (loadScreenArrowCurrent)
                     {
-                        // Computer cases
+                        // Computer cases:
                         case 127:  initializeMaze(50, 25);  break;
                         case 217:  initializeMaze(40, 20);  break;
                         case 307:  initializeMaze(32, 16);  break;
@@ -441,10 +475,10 @@ namespace DevcadeGame
                         case 667:  initializeMaze(8, 4);    break;
                         case 757:  initializeMaze(4, 2);    break;
                         case 847:  initializeMaze(2, 1);    break;
-                        // Devcade cases
-                        case 322:  initializeMaze(50, 25);  break;
-                        case 547:  initializeMaze(40, 20);  break;
-                        // case 772:  initializeMaze(32, 16);  break;
+                        // Devcade cases (NO 32 by 16):
+                        case 322:  initializeMaze(80, 40);  break;
+                        case 547:  initializeMaze(50, 25);  break;
+                        case 772:  initializeMaze(40, 20);  break;
                         case 997:  initializeMaze(20, 10);  break;
                         case 1222: initializeMaze(16, 8);   break;
                         case 1447: initializeMaze(10, 5);   break;
@@ -469,8 +503,8 @@ namespace DevcadeGame
                 converted_x = (x_index - bottomLeftX) / blockSizeC;
                 converted_y = (bottomLeftY - y_index) / blockSizeC;
 
-                // This is the block value in the grid based off of your position.
-                Block current = blockGrid1.getBlockAt(converted_y, converted_x);
+                // This initializes the block value in the grid based off of the current position.
+                currentBlock = blockGrid1.getBlockAt(converted_y, converted_x);
 
                 // This changes the direction variable of the arrow.
                 // It also changes the position variables if it is possible.
@@ -480,28 +514,28 @@ namespace DevcadeGame
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickUp))
                     {
                         direction = "N";
-                        if (y_index != topRightY && !current.hasNorthWall()) { y_index -= blockSizeC; }
+                        if (y_index != topRightY && !currentBlock.hasNorthWall()) { y_index -= blockSizeC; }
                         button_pressed = 1;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.D) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickRight))
                     {
                         direction = "E";
-                        if (x_index != topRightX && !current.hasEastWall()) { x_index += blockSizeC; }
+                        if (x_index != topRightX && !currentBlock.hasEastWall()) { x_index += blockSizeC; }
                         button_pressed = 2;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickDown))
                     {
                         direction = "S";
-                        if (y_index != bottomLeftY && !current.hasSouthWall()) { y_index += blockSizeC; }
+                        if (y_index != bottomLeftY && !currentBlock.hasSouthWall()) { y_index += blockSizeC; }
                         button_pressed = 3;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.A) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickLeft))
                     {
                         direction = "W";
-                        if (x_index != bottomLeftX && !current.hasWestWall()) { x_index -= blockSizeC; }
+                        if (x_index != bottomLeftX && !currentBlock.hasWestWall()) { x_index -= blockSizeC; }
                         button_pressed = 4;
                     }
                 }
@@ -551,12 +585,12 @@ namespace DevcadeGame
             if (screenType == ScreenType.LoadingScreen)
             {
                 // This draws the loading screen instructions.
-                _spriteBatch.DrawString(otherFont, "Select the maze size.", selectionVector, Color.White);
+                _spriteBatch.DrawString(otherFont, text3, selectionVector, Color.White);
 
                 // This draws the different maze size options.
-                _spriteBatch.DrawString(otherFont, "50 by 25", vPosition_50_25, Color.White);
-                _spriteBatch.DrawString(otherFont, "40 by 20", vPosition_40_20, Color.White);
-                _spriteBatch.DrawString(otherFont, "32 by 16", vPosition_32_16, Color.White);
+                _spriteBatch.DrawString(otherFont, mazeSizeText1, vPosition_50_25, Color.White);
+                _spriteBatch.DrawString(otherFont, mazeSizeText2, vPosition_40_20, Color.White);
+                _spriteBatch.DrawString(otherFont, mazeSizeText3, vPosition_32_16, Color.White);
                 _spriteBatch.DrawString(otherFont, "20 by 10", vPosition_20_10, Color.White);
                 _spriteBatch.DrawString(otherFont, "16 by 8", vPosition_16_8, Color.White);
                 _spriteBatch.DrawString(otherFont, "10 by 5", vPosition_10_5, Color.White);
@@ -591,11 +625,11 @@ namespace DevcadeGame
                 else
                 {
                     _spriteBatch.DrawString(otherFont, "You win! Close the game.", winVector, Color.White);
-                    _spriteBatch.DrawString(otherFont, "Press \"Space\" for another maze.", restartVector, Color.White);
+                    _spriteBatch.DrawString(otherFont, text7, restartVector, Color.White);
                 }
 
-                // This creates the current Rectangle for the arrow based on the current position
-                Rectangle arrowPosition = new Rectangle(x_index, y_index, blockSize8, blockSize8);
+                // This initializes the current position of the arrow in the maze screen.
+                arrowPosition = new Rectangle(x_index, y_index, blockSize8, blockSize8);
 
                 // This draws the corresponding arrow based off of the current direction and x & y position.
                 if (direction == "N") { _spriteBatch.Draw(northArrow, arrowPosition, Color.White); }

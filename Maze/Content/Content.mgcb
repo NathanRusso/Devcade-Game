@@ -68,6 +68,13 @@
 /processorParam:TextureFormat=Compressed
 /build:fontCompletedMaze.spritefont
 
+#begin fontCompletedMaze2.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fontCompletedMaze2.spritefont
+
 #begin fontCreator.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -75,12 +82,26 @@
 /processorParam:TextureFormat=Compressed
 /build:fontCreator.spritefont
 
+#begin fontCreator2.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fontCreator2.spritefont
+
 #begin fontTitle.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:fontTitle.spritefont
+
+#begin fontTitle2.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fontTitle2.spritefont
 
 #begin Start Button.png
 /importer:TextureImporter

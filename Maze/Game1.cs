@@ -54,7 +54,7 @@ namespace DevcadeGame
         private Vector2 vPosition_4_2;
         private Vector2 vPosition_2_1;
 
-        // This declares list of ints that must be used depdening on if the game is running in Devcade.
+        // This declares list of integers that must be used depending on if the game is running in Devcade.
         private List<int> selectedList;
 
         // This declares the height and width of the maze in pixels.
@@ -85,7 +85,7 @@ namespace DevcadeGame
         private int borderPixel3;
         private int borderPixel4;
 
-        // This declares the y-axis positions for differnt strings that need to be drawn.
+        // This declares the y-axis positions for different strings that need to be drawn.
         private int drawPositionY1;
         private int drawPositionY2;
         private int drawPositionY3;
@@ -261,7 +261,7 @@ namespace DevcadeGame
             line = new Texture2D(GraphicsDevice, 1, 1);
             line.SetData(new[] { Color.White });
 
-            // This initializes list of ints that must be used depdening on if the game is running in Devcade.
+            // This initializes list of integers that must be used depending on if the game is running in Devcade.
             if (windowSize.Width == 420) // The game is on my computer.
             { 
                 selectedList = new List<int> { 800, 400, 10, 410, 150, 950, 210, 130, 90, 847, 127, 
@@ -291,7 +291,7 @@ namespace DevcadeGame
             loadScreenSizeDisplacement = selectedList[8];
 
             // This initializes the y-axis current, start, and end position of the arrow sprite in the loading screen.
-            loadScreenArrowCurrent = selectedList[9]; // This chnages
+            loadScreenArrowCurrent = selectedList[9]; // This changes
             loadScreenArrowStart = selectedList[9];
             loadScreenArrowEnd = selectedList[10];
 
@@ -301,7 +301,7 @@ namespace DevcadeGame
             borderPixel3 = selectedList[13];
             borderPixel4 = selectedList[14];
 
-            // This initializes the y-axis positions for differnt strings that need to be drawn
+            // This initializes the y-axis positions for different strings that need to be drawn
             drawPositionY1 = selectedList[15];
             drawPositionY2 = selectedList[16];
             drawPositionY3 = selectedList[17];
@@ -375,7 +375,7 @@ namespace DevcadeGame
                 Exit();
             }
 
-            // This will send the user back to the loading screen if ture.
+            // This will send the user back to the loading screen if true.
             if (Keyboard.GetState().IsKeyDown(Keys.Space) || Input.GetButton(1, Input.ArcadeButtons.Menu))
             {
                 screenType = ScreenType.LoadingScreen;
@@ -383,7 +383,7 @@ namespace DevcadeGame
                 completedMaze = false;
             }
 
-            // Performs the update comands based on whether we are in the loading screen or in the maze screen.
+            // Performs the update commands based on whether we are in the loading screen or in the maze screen.
             if (screenType == ScreenType.LoadingScreen) // If we are in the loading screen
             {
                 // This changed the arrow's y_axis position based off of the user's input.
@@ -422,7 +422,7 @@ namespace DevcadeGame
                     }
                 }
 
-                // This inializes the current position of the arrow in the loading screen.
+                // This initializes the current position of the arrow in the loading screen.
                 vCurrentPosition = new Rectangle(mazePixelYStart, loadScreenArrowCurrent, 40, 40);
 
                 // This initializes the maze and changes the screen type if the user has selected a maze size.
@@ -547,7 +547,7 @@ namespace DevcadeGame
             _spriteBatch.DrawString(titleFont, "Dev-Maze", titleVector, Color.White);
             _spriteBatch.DrawString(creatorFont, "By  Nathan Russo", creatorVector, Color.White);
 
-            // Performs the draw comands based on whether we are in the loading screen or in the maze screen.
+            // Performs the draw commands based on whether we are in the loading screen or in the maze screen.
             if (screenType == ScreenType.LoadingScreen)
             {
                 // This draws the loading screen instructions.

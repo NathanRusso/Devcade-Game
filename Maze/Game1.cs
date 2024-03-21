@@ -171,7 +171,7 @@ namespace DevcadeGame
         {
             game = this;
             _graphics = new GraphicsDeviceManager(this);
-			Content.RootDirectory = "Content";
+			Content.RootDirectory = "Content2";
 			IsMouseVisible = false;
         }
 

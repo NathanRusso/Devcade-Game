@@ -15,7 +15,7 @@ namespace DevcadeGame
         private bool south_wall;
         private bool west_wall;
 
-        // The values used to mark when a Block is visisted and when it is added to the maze.
+        // The values used to mark when a Block is visited and when it is added to the maze.
         private bool visited;
         private bool in_the_maze;
 
@@ -44,7 +44,7 @@ namespace DevcadeGame
             in_the_maze = false;
         }
 
-        // This returns the Block's y cooridnate.
+        // This returns the Block's y coordinate.
         public int getYCoordinate() { return y_index; }
 
         // This returns the Block's x coordinate.
@@ -62,7 +62,7 @@ namespace DevcadeGame
         // This returns whether a Block has a west wall.
         public bool hasWestWall() { return west_wall; }
 
-        // This returns whether a Block has been visisted.
+        // This returns whether a Block has been visited.
         public bool hasBeenVisited() { return visited; }
 
         // This returns whether a Block has been added to the maze.

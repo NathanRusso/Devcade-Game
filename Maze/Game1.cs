@@ -197,7 +197,7 @@ namespace DevcadeGame
         public void initializeMaze(int rows, int columns)
         {
             // It constructs a BlockGrid with a 2D array of Blocks that has a given number of rows and columns. 
-            // 800 x 400 pixels or 1000 x 2000 pixels
+            // 800 x 400 pixels --> 1000 x 2000 pixels
             blockGrid1 = new BlockGrid(rows, columns, mazePixelWidth);
             /* Y by X, with block sizes.
              * 80 by 40, with a block size of 10 --> 25

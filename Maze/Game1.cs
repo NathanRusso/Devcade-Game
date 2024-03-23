@@ -386,7 +386,7 @@ namespace DevcadeGame
              *  eastRectangle = new Rectangle(410, 150, 4, 800) or (1040, 375, 12, 2000);
              *  southRectangle = new Rectangle(7, 950, 407, 3) or (31, 2375, 1021, 9);
              *  westRectangle = new Rectangle(7, 150, 4, 800) or (31, 375, 12, 2000);  */
-            northRectangle = new Rectangle(borderPixel1, mazePixelYStart, borderPixel4, borderPixel3);
+            northRectangle = new Rectangle(borderPixel1, mazePixelYStart - borderPixel3 + 1, borderPixel4, borderPixel3);
             eastRectangle = new Rectangle(mazePixelXEnd, mazePixelYStart, borderPixel2, mazePixelHeight);
             southRectangle = new Rectangle(borderPixel1, mazePixelYEnd, borderPixel4, borderPixel3);
             westRectangle = new Rectangle(borderPixel1, mazePixelYStart, borderPixel2, mazePixelHeight);

@@ -214,7 +214,7 @@ namespace DevcadeGame
 
             // It sets the current and smaller block sizes based off of the current blockGrid.
             blockSizeC = blockGrid1.getBlockSize();
-            blockSize9 = Convert.ToInt32(blockSizeC * 0.9);
+            blockSize9 = Convert.ToIn32(blockSizeC * 0.9);
             blockSize8 = Convert.ToInt32(blockSizeC * 0.8);
             blockSize1 = blockSizeC - blockSize9;
 

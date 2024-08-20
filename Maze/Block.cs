@@ -5,7 +5,7 @@ namespace DevcadeGame
     // Block- An object to represent a block on the grid in the maze.
     public class Block
     {
-        // The y and x integers used for the  of the Block.
+        // The y and x integers used for the of the Block.
         private int y_index;
         private int x_index;
 

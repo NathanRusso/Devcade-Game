@@ -214,7 +214,7 @@ namespace DevcadeGame
 
             // It sets the current and smaller block sizes based off of the current blockGrid.
             blockSizeC = blockGrid1.getBlockSize();
-            blockSize9 = Convert.ToIn32(blockSizeC * 0.9);
+            blockSize9 = Convert.ToInt32(blockSizeC * 0.9);
             blockSize8 = Convert.ToInt32(blockSizeC * 0.8);
             blockSize1 = blockSizeC - blockSize9;
 
@@ -285,7 +285,7 @@ namespace DevcadeGame
             {
                 selectedList1 = new List<int> { 800, 400, 10, 410, 150, 950, 210, 130, 90, 847, 127,
                                                7, 4, 3, 407, 0, 40, 70, 105};
-                selectedList2 = new List<string> { "Select the maze size.", "Press 'Space' for another maze.", 
+                selectedList2 = new List<string> { "Select the maze size.", "Press 'Backspace' for another maze.", 
                     "50 by 25", "40 by 20", "32 by 16", "fontTitle", "fontCreator", "fontCompletedMaze" };
             }
             else // The game is on Devcade.
@@ -410,7 +410,7 @@ namespace DevcadeGame
             }
 
             // This will send the user back to the loading screen if true.
-            if (Keyboard.GetState().IsKeyDown(Keys.Space) || Input.GetButton(1, Input.ArcadeButtons.Menu))
+            if (Keyboard.GetState().IsKeyDown(Keys.Back) || Input.GetButton(1, Input.ArcadeButtons.Menu))
             {
                 screenType = ScreenType.LoadingScreen;
                 button_pressed = 0;

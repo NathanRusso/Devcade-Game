@@ -245,6 +245,8 @@ namespace DevcadeGame
 			Input.Initialize();
             
 			// Set window size if running debug (in release it will be full screen)
+            // Original computer screen dimensions 420 x 980.
+            // Original Devcade screen dimensions 1080 x 2560.
 			#region
 #if DEBUG
 			_graphics.PreferredBackBufferWidth = 420;
@@ -285,7 +287,7 @@ namespace DevcadeGame
             {
                 selectedList1 = new List<int> { 800, 400, 10, 410, 150, 950, 210, 130, 90, 847, 127,
                                                7, 4, 3, 407, 0, 40, 70, 105};
-                selectedList2 = new List<string> { "Select the maze size.", "Press 'Backspace' for another maze.", 
+                selectedList2 = new List<string> { "Select the maze size.", "Press 'Back' for another maze.", 
                     "50 by 25", "40 by 20", "32 by 16", "fontTitle", "fontCreator", "fontCompletedMaze" };
             }
             else // The game is on Devcade.

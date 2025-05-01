@@ -6,87 +6,87 @@ namespace DevcadeGame
     public class Block
     {
         // The y and x integers used for the of the Block.
-        private int y_index;
-        private int x_index;
+        private readonly int yIndex;
+        private readonly int xIndex;
 
         // The wall values to determine if a wall exist.
-        private bool north_wall;
-        private bool east_wall;
-        private bool south_wall;
-        private bool west_wall;
+        private bool northWall;
+        private bool eastWall;
+        private bool southWall;
+        private bool westWall;
 
         // The values used to mark when a Block is visited and when it is added to the maze.
         private bool visited;
-        private bool in_the_maze;
+        private bool inTheMaze;
 
         // This creates the Block with specific x and y values.
         // All of the walls exist, and it hasn't been visited or added to the maze.
-        public Block(int _y_index, int _x_index)
+        public Block(int _yIndex, int _xIndex)
         {
-            y_index = _y_index;
-            x_index = _x_index;
-            north_wall = true;
-            east_wall = true;
-            south_wall = true;
-            west_wall = true;
+            yIndex = _yIndex;
+            xIndex = _xIndex;
+            northWall = true;
+            eastWall = true;
+            southWall = true;
+            westWall = true;
             visited = false;
-            in_the_maze = false;
+            inTheMaze = false;
         }
 
-        // This resets all of the values except for the x_index and y_index.
-        public void reset()
+        // This resets all of the values except for the xIndex and yIndex.
+        public void Reset()
         {
-            north_wall = true;
-            east_wall = true;
-            south_wall = true;
-            west_wall = true;
+            northWall = true;
+            eastWall = true;
+            southWall = true;
+            westWall = true;
             visited = false;
-            in_the_maze = false;
+            inTheMaze = false;
         }
 
         // This returns the Block's y coordinate.
-        public int getYCoordinate() { return y_index; }
+        public int GetYCoordinate() { return yIndex; }
 
         // This returns the Block's x coordinate.
-        public int getXCoordinate() { return x_index; }
+        public int GetXCoordinate() { return xIndex; }
 
         // This returns whether a Block has a north wall.
-        public bool hasNorthWall() { return north_wall; }
+        public bool HasNorthWall() { return northWall; }
 
         // This returns whether a Block has a east wall.
-        public bool hasEastWall() { return east_wall; }
+        public bool HasEastWall() { return eastWall; }
 
         // This returns whether a Block has a south wall.
-        public bool hasSouthWall() { return south_wall; }
+        public bool HasSouthWall() { return southWall; }
 
         // This returns whether a Block has a west wall.
-        public bool hasWestWall() { return west_wall; }
+        public bool HasWestWall() { return westWall; }
 
         // This returns whether a Block has been visited.
-        public bool hasBeenVisited() { return visited; }
+        public bool HasBeenVisited() { return visited; }
 
         // This returns whether a Block has been added to the maze.
-        public bool isInTheMaze() { return in_the_maze; }
+        public bool IsInTheMaze() { return inTheMaze; }
 
         // This sets the north wall to a given boolean.
-        public void setNorthWall(bool north) { north_wall = north; }
+        public void SetNorthWall(bool north) { northWall = north; }
 
         // This sets the east wall to a given boolean.
-        public void setEastWall(bool east) { east_wall = east; }
+        public void SetEastWall(bool east) { eastWall = east; }
 
         // This sets the south wall to a given boolean.
-        public void setSouthWall(bool south) { south_wall = south; }
+        public void SetSouthWall(bool south) { southWall = south; }
 
         // This sets the west wall to a given boolean.
-        public void setWestWall(bool west) { west_wall = west; }
+        public void SetWestWall(bool west) { westWall = west; }
 
         // This sets the Block's visited value to a given boolean.
-        public void setVisitedTo(bool visit) { visited = visit; }
+        public void SetVisitedTo(bool visit) { visited = visit; }
 
         // This changes the maze value to true since a Block has been added to the maze.
-        public void addToTheMaze() { in_the_maze = true; }
+        public void AddToTheMaze() { inTheMaze = true; }
 
         // This changes the maze value to false since a Block has been removed from the maze.
-        public void removeFromTheMaze() { in_the_maze = false; }
+        public void removeFromTheMaze() { inTheMaze = false; }
     }
 }

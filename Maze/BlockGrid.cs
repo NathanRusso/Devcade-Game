@@ -30,29 +30,32 @@ namespace DevcadeGame
         private int columns;
 
         // The size of the blocks in the maze.
-        private int block_size;
+        private int blockSize;
 
         // It is an integer to count the number of times the generateMaze() while loop runs.
         private int iterations = 0;
 
         // It is an integer to track the number of points used.
-        private int point_count = 0;
+        private int pointCount = 0; // REMOVE?????
 
         // These integers are used to help prevent a stack overflow.
         private int countR = 0;
         private int recursionLimit = 2600;
 
+        // This is a list of strings for the 4 direction one can move.
+        List<string> directions = new List<string> { "N", "E", "S", "W" };
+
         // This is the BlockGrid constructor.
-        public BlockGrid(int _rows, int _columns, int pixel_width)
+        public BlockGrid(int _rows, int _columns, int pixelWidth)
         {
             rows = _rows;
             columns = _columns;
-            block_size = pixel_width / _columns;
-            blockGrid = new Block[_rows, _columns];
+            blockSize = pixelWidth / _columns;
+            blockGrid = new Block[rows, columns];
             availablePoints = new List<ValueTuple<int, int>> { };
-            for (int y = 0; y < _rows; y++)
+            for (int y = 0; y < rows; y++)
             {
-                for (int x = 0; x < _columns; x++)
+                for (int x = 0; x < columns; x++)
                 {
                     Block block = new Block(y, x);
                     blockGrid[y, x] = block;
@@ -63,56 +66,56 @@ namespace DevcadeGame
         }
 
 
-        public int getRows() { return rows; }
+        public int GetRows() { return rows; }
 
-        public int getColumns() { return columns; }
+        public int GetColumns() { return columns; }
 
-        public int getBlockSize() { return block_size; }
+        public int GetBlockSize() { return blockSize; }
 
-        public int getIterations() { return iterations; }
+        public int GetIterations() { return iterations; }
 
-        public int getPointCount() { return point_count; }
+        public int GetPointCount() { return pointCount; }
 
-        public Block[,] getBlockGrid() { return blockGrid; }
+        public Block[,] GetBlockGrid() { return blockGrid; }
 
-        public List<ValueTuple<int, int>> getAvailablePoints() { return availablePoints; }
+        public List<ValueTuple<int, int>> GetAvailablePoints() { return availablePoints; }
 
-        public Block getBlockAt(int y_value, int x_value) { return blockGrid[y_value, x_value]; }
+        public Block GetBlockAt(int yValue, int xValue) { return blockGrid[yValue, xValue]; }
 
-        public Block getBlockAt(ValueTuple<int, int> point) { return blockGrid[point.Item1, point.Item2]; }
+        public Block GetBlockAt(ValueTuple<int, int> point) { return blockGrid[point.Item1, point.Item2]; }
 
 
         // It draws the inner lines of the maze, not the borders.
-        public void drawMaze(int x_start, int y_end, Texture2D innerLine, SpriteBatch spriteBatch)
+        public void DrawMaze(int xStart, int yEnd, Texture2D innerLine, SpriteBatch spriteBatch)
         {
             for (int y = 0; y < rows; y++)
             {
                 for (int x = y % 2; x < columns; x += 2)
                 {
-                    Block spot = this.getBlockAt(y, x);
-                    if (spot.hasNorthWall())
+                    Block spot = GetBlockAt(y, x);
+                    if (spot.HasNorthWall())
                     {
-                        Rectangle n_line_position = new Rectangle(x_start + (x * block_size),
-                            y_end - ((y + 1) * block_size), block_size, 1);
-                        spriteBatch.Draw(innerLine, n_line_position, Color.White);
+                        Rectangle nLinePosition = new Rectangle(xStart + (x * blockSize),
+                            yEnd - ((y + 1) * blockSize), blockSize, 1);
+                        spriteBatch.Draw(innerLine, nLinePosition, Color.White);
                     }
-                    if (spot.hasEastWall())
+                    if (spot.HasEastWall())
                     {
-                        Rectangle e_line_position = new Rectangle(x_start + ((x + 1) * block_size),
-                            y_end - ((y + 1) * block_size), 1, block_size);
-                        spriteBatch.Draw(innerLine, e_line_position, Color.White);
+                        Rectangle eLinePosition = new Rectangle(xStart + ((x + 1) * blockSize),
+                            yEnd - ((y + 1) * blockSize), 1, blockSize);
+                        spriteBatch.Draw(innerLine, eLinePosition, Color.White);
                     }
-                    if (spot.hasSouthWall())
+                    if (spot.HasSouthWall())
                     {
-                        Rectangle s_line_position = new Rectangle(x_start + (x * block_size),
-                            y_end - (y * block_size), block_size, 1);
-                        spriteBatch.Draw(innerLine, s_line_position, Color.White);
+                        Rectangle sLinePosition = new Rectangle(xStart + (x * blockSize),
+                            yEnd - (y * blockSize), blockSize, 1);
+                        spriteBatch.Draw(innerLine, sLinePosition, Color.White);
                     }
-                    if (spot.hasWestWall())
+                    if (spot.HasWestWall())
                     {
-                        Rectangle w_line_position = new Rectangle(x_start + (x * block_size),
-                            y_end - ((y + 1) * block_size), 1, block_size);
-                        spriteBatch.Draw(innerLine, w_line_position, Color.White);
+                        Rectangle wLinePosition = new Rectangle(xStart + (x * blockSize),
+                            yEnd - ((y + 1) * blockSize), 1, blockSize);
+                        spriteBatch.Draw(innerLine, wLinePosition, Color.White);
                     }
                 }
             }
@@ -120,17 +123,17 @@ namespace DevcadeGame
 
         // It generates a randomized maze using Wilson's algorithm.
         // The following 5 private functions all help this function run.
-        public void generateMaze()
+        public void GenerateMaze()
         {
             // A random point of coordinates is generated.
             // The block at said coordinates is added to the maze.
             // The point of coordinates is then removed from available points.
-            ValueTuple<int, int> first_point = generate_random_available_point();
-            this.getBlockAt(first_point).addToTheMaze();
-            availablePoints.Remove(first_point);
+            ValueTuple<int, int> firstPoint = GenerateRandomAvailablePoint();
+            GetBlockAt(firstPoint).AddToTheMaze();
+            availablePoints.Remove(firstPoint);
 
-            // Increases the point count due to the creation of a point for first_point.
-            point_count++;
+            // Increases the point count due to the creation of a point for firstPoint.
+            pointCount++;
 
             // It generates the framework of the maze.
             // It gives every Block in blockGrid1 an updated set of values.
@@ -138,22 +141,22 @@ namespace DevcadeGame
             while (availablePoints.Count > 0)
             {
                 // It is a random point of coordinates to determine the starting position.
-                ValueTuple<int, int> start = generate_random_available_point();
+                ValueTuple<int, int> start = GenerateRandomAvailablePoint();
 
                 // It is an empty list which is passed as a parameter to keep track of visited points.
                 List<ValueTuple<int, int>> empty = new List<ValueTuple<int, int>> { };
 
                 // It is an empty list which will be filled with all of the traveled to points.
-                List<ValueTuple<int, int>> visited = generate_path(empty, start, 0);
+                List<ValueTuple<int, int>> visited = GeneratePath(empty, start, 0);
 
                 // Increases the point count by the amount of points to be added to the maze.
-                point_count += visited.Count;
+                pointCount += visited.Count;
 
                 // It sets all of the optimized points into the maze.
                 // It then deletes all of those points from the available list.
                 foreach (var point in visited)
                 {
-                    this.getBlockAt(point).addToTheMaze();
+                    GetBlockAt(point).AddToTheMaze();
                     availablePoints.Remove(point);
                 }
 
@@ -163,7 +166,7 @@ namespace DevcadeGame
         }
 
         // It generates a random point from the list of available points.
-        private ValueTuple<int, int> generate_random_available_point()
+        private ValueTuple<int, int> GenerateRandomAvailablePoint()
         {
             Random random = new Random();
             int index = random.Next(0, availablePoints.Count);
@@ -173,7 +176,7 @@ namespace DevcadeGame
 
         // It generates a random direction between north, east, south, and west.
         // Given a previous direction, if stated, it removes the opposite as a possibility.
-        private string generate_random_direction()
+        private string GenerateRandomDirection()
         {
             countR++;
             if (countR >= recursionLimit)
@@ -181,63 +184,61 @@ namespace DevcadeGame
                 countR = 0;
                 return "";
             }
-            List<string> directions = new List<string> { "N", "E", "S", "W" };
             Random random = new Random();
             return directions[random.Next(0, 4)];
         }
         
         // It adds back the correct wall value based on change in position between itself and the previous point.
-        private void re_add_wall_value(ValueTuple<int, int> current, ValueTuple<int, int> prior)
+        private void ReAddWallValue(ValueTuple<int, int> current, ValueTuple<int, int> prior)
         {
             if (prior.Item1 + 1 == current.Item1)
             {
-                this.getBlockAt(current).setSouthWall(false);
+                GetBlockAt(current).SetSouthWall(false);
             }
             else if (prior.Item2 + 1 == current.Item2)
             {
-                this.getBlockAt(current).setWestWall(false);
+                GetBlockAt(current).SetWestWall(false);
             }
             else if (prior.Item1 - 1 == current.Item1)
             {
-                this.getBlockAt(current).setNorthWall(false);
+                GetBlockAt(current).SetNorthWall(false);
             }
             else if (prior.Item2 - 1 == current.Item2)
             {
-                this.getBlockAt(current).setEastWall(false);
+                GetBlockAt(current).SetEastWall(false);
             }
         }
 
         // It returns a list of visited points with any loops removed.
-        private List<ValueTuple<int, int>> remove_loop(List<ValueTuple<int, int>> visited_points,
-            ValueTuple<int, int> current)
+        private List<ValueTuple<int, int>> RemoveLoop(List<ValueTuple<int, int>> visitedPoints, ValueTuple<int, int> current)
         {
-            List<ValueTuple<int, int>> updated_points = new List<ValueTuple<int, int>> { };
-            if (this.getBlockAt(current).hasBeenVisited())
+            List<ValueTuple<int, int>> updatedPoints = new List<ValueTuple<int, int>> { };
+            if (GetBlockAt(current).HasBeenVisited())
             {
-                int index = visited_points.IndexOf(current);
-                for (int i = 0; i < visited_points.Count; i++)
+                int index = visitedPoints.IndexOf(current);
+                for (int i = 0; i < visitedPoints.Count; i++)
                 {
                     if (i < index)
                     {
-                        updated_points.Add(visited_points[i]);
+                        updatedPoints.Add(visitedPoints[i]);
                     }
                     else if (i >= index)
                     {
-                        this.getBlockAt(visited_points[i]).reset();
+                        GetBlockAt(visitedPoints[i]).Reset();
                         if (i == index && i > 0)
                         {
-                            re_add_wall_value(visited_points[i], visited_points[i - 1]);
+                            ReAddWallValue(visitedPoints[i], visitedPoints[i - 1]);
                         }
                     }
                 }
             }
             else
             {
-                updated_points = visited_points;
+                updatedPoints = visitedPoints;
             }
-            updated_points.Add(current);
-            this.getBlockAt(current).setVisitedTo(true);
-            return updated_points;
+            updatedPoints.Add(current);
+            GetBlockAt(current).SetVisitedTo(true);
+            return updatedPoints;
         }
 
         /* This function returns a list of all of the points visited.
@@ -251,86 +252,85 @@ namespace DevcadeGame
         *     - If the next point is already in the maze, the function ends.
         *     - If not, the functions calls itself with a new start point.
         * If it never enters any of the 4 statements, it returns it self and tries again. */
-        private List<ValueTuple<int, int>> generate_path(List<ValueTuple<int, int>> visited_points,
-            ValueTuple<int, int> start, int recursive_count)
+        private List<ValueTuple<int, int>> GeneratePath(List<ValueTuple<int, int>> visitedPoints, ValueTuple<int, int> start, int RecursiveCount)
         {
-            string direction = generate_random_direction();
+            string direction = GenerateRandomDirection();
             if (direction == "")
             {
-                foreach (var point in visited_points)
+                foreach (var point in visitedPoints)
                 {
-                    this.getBlockAt(point).reset();
+                    GetBlockAt(point).Reset();
                 }
                 List<ValueTuple<int, int>> nothing = new List<ValueTuple<int, int>> { };
                 return nothing;
             }
             if (direction == "N" && start.Item1 != rows - 1)
             {
-                List<ValueTuple<int, int>> updated_visited = remove_loop(visited_points, start);
+                List<ValueTuple<int, int>> updatedVisited = RemoveLoop(visitedPoints, start);
                 ValueTuple<int, int> next = new ValueTuple<int, int>(start.Item1 + 1, start.Item2);
-                this.getBlockAt(start).setNorthWall(false);
-                this.getBlockAt(next).setSouthWall(false);
-                if (this.getBlockAt(next).isInTheMaze())
+                GetBlockAt(start).SetNorthWall(false);
+                GetBlockAt(next).SetSouthWall(false);
+                if (GetBlockAt(next).IsInTheMaze())
                 {
-                    this.getBlockAt(next).setVisitedTo(true);
-                    return updated_visited;
+                    GetBlockAt(next).SetVisitedTo(true);
+                    return updatedVisited;
                 }
                 else
                 {
-                    return generate_path(updated_visited, next, recursive_count);
+                    return GeneratePath(updatedVisited, next, RecursiveCount);
                 }
             }
             else if (direction == "E" && start.Item2 != columns - 1)
             {
-                List<ValueTuple<int, int>> updated_visited = remove_loop(visited_points, start);
+                List<ValueTuple<int, int>> updatedVisited = RemoveLoop(visitedPoints, start);
                 ValueTuple<int, int> next = new ValueTuple<int, int>(start.Item1, start.Item2 + 1);
-                this.getBlockAt(start).setEastWall(false);
-                this.getBlockAt(next).setWestWall(false);
-                if (this.getBlockAt(next).isInTheMaze())
+                GetBlockAt(start).SetEastWall(false);
+                GetBlockAt(next).SetWestWall(false);
+                if (GetBlockAt(next).IsInTheMaze())
                 {
-                    this.getBlockAt(next).setVisitedTo(true);
-                    return updated_visited;
+                    GetBlockAt(next).SetVisitedTo(true);
+                    return updatedVisited;
                 }
                 else
                 {
-                    return generate_path(updated_visited, next, recursive_count);
+                    return GeneratePath(updatedVisited, next, RecursiveCount);
                 }
             }
             else if (direction == "S" && start.Item1 != 0)
             {
-                List<ValueTuple<int, int>> updated_visited = remove_loop(visited_points, start);
+                List<ValueTuple<int, int>> updatedVisited = RemoveLoop(visitedPoints, start);
                 ValueTuple<int, int> next = new ValueTuple<int, int>(start.Item1 - 1, start.Item2);
-                this.getBlockAt(start).setSouthWall(false);
-                this.getBlockAt(next).setNorthWall(false);
-                if (this.getBlockAt(next).isInTheMaze())
+                GetBlockAt(start).SetSouthWall(false);
+                GetBlockAt(next).SetNorthWall(false);
+                if (GetBlockAt(next).IsInTheMaze())
                 {
-                    this.getBlockAt(next).setVisitedTo(true);
-                    return updated_visited;
+                    GetBlockAt(next).SetVisitedTo(true);
+                    return updatedVisited;
                 }
                 else
                 {
-                    return generate_path(updated_visited, next, recursive_count);
+                    return GeneratePath(updatedVisited, next, RecursiveCount);
                 }
             }
             else if (direction == "W" && start.Item2 != 0)
             {
-                List<ValueTuple<int, int>> updated_visited = remove_loop(visited_points, start);
+                List<ValueTuple<int, int>> updatedVisited = RemoveLoop(visitedPoints, start);
                 ValueTuple<int, int> next = new ValueTuple<int, int>(start.Item1, start.Item2 - 1);
-                this.getBlockAt(start).setWestWall(false);
-                this.getBlockAt(next).setEastWall(false);
-                if (this.getBlockAt(next).isInTheMaze())
+                GetBlockAt(start).SetWestWall(false);
+                GetBlockAt(next).SetEastWall(false);
+                if (GetBlockAt(next).IsInTheMaze())
                 {
-                    this.getBlockAt(next).setVisitedTo(true);
-                    return updated_visited;
+                    GetBlockAt(next).SetVisitedTo(true);
+                    return updatedVisited;
                 }
                 else
                 {
-                    return generate_path(updated_visited, next, recursive_count);
+                    return GeneratePath(updatedVisited, next, RecursiveCount);
                 }
             }
             else
             {
-                return generate_path(visited_points, start, recursive_count);
+                return GeneratePath(visitedPoints, start, RecursiveCount);
             }
         }
     }

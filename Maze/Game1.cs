@@ -35,7 +35,7 @@ namespace DevcadeGame
         private ScreenType screenType;
 
         // This is an integer used to determine how to move the arrow in both screen types.
-        private int button_pressed;
+        private int buttonPressed;
 
         // This is a boolean used to determine when you made it to the end of the maze.
         private bool completedMaze;
@@ -115,13 +115,13 @@ namespace DevcadeGame
 
         // These are integers and a string set at your current position and direction.
         // These will change as you move.
-        private int x_index;
-        private int y_index;
+        private int xIndex;
+        private int yIndex;
         private string direction;
 
         // These are integers which will be used to convert pixel position to grid position.
-        private int converted_x;
-        private int converted_y;
+        private int convertedX;
+        private int convertedY;
 
         // This declares the Texture2D needed to draw the maze lines.
         private Texture2D line;
@@ -194,7 +194,7 @@ namespace DevcadeGame
 
 
         // This initializes all maze information needed after the loading screen.
-        public void initializeMaze(int rows, int columns)
+        public void InitializeMaze(int rows, int columns)
         {
             // It constructs a BlockGrid with a 2D array of Blocks that has a given number of rows and columns. 
             // 800 x 400 pixels --> 1000 x 2000 pixels
@@ -213,7 +213,7 @@ namespace DevcadeGame
              */
 
             // It sets the current and smaller block sizes based off of the current blockGrid.
-            blockSizeC = blockGrid1.getBlockSize();
+            blockSizeC = blockGrid1.GetBlockSize();
             blockSize9 = Convert.ToInt32(blockSizeC * 0.9);
             blockSize8 = Convert.ToInt32(blockSizeC * 0.8);
             blockSize1 = blockSizeC - blockSize9;
@@ -225,12 +225,12 @@ namespace DevcadeGame
             bottomLeftY = mazePixelYEnd - blockSize9;
 
             // This sets your starting position and direction.
-            x_index = bottomLeftX;
-            y_index = bottomLeftY;
+            xIndex = bottomLeftX;
+            yIndex = bottomLeftY;
             direction = "N";
 
             // This generates a maze for blockGrid1.
-            blockGrid1.generateMaze();
+            blockGrid1.GenerateMaze();
 
             // This initializes the start button and stop sign.
             startRectangle = new Rectangle(bottomLeftX, bottomLeftY, blockSize8, blockSize8);
@@ -263,7 +263,7 @@ namespace DevcadeGame
             screenType = ScreenType.LoadingScreen;
 
             // This sets up the initial button and completed maze values.
-            button_pressed = 0;
+            buttonPressed = 0;
             completedMaze = false;
 
             windowSize = GraphicsDevice.Viewport.Bounds;
@@ -415,15 +415,15 @@ namespace DevcadeGame
             if (Keyboard.GetState().IsKeyDown(Keys.Back) || Input.GetButton(1, Input.ArcadeButtons.Menu))
             {
                 screenType = ScreenType.LoadingScreen;
-                button_pressed = 0;
+                buttonPressed = 0;
                 completedMaze = false;
             }
 
             // Performs the update commands based on whether we are in the loading screen or in the maze screen.
             if (screenType == ScreenType.LoadingScreen) // If we are in the loading screen
             {
-                // This changed the arrow's y_axis position based off of the user's input.
-                if (button_pressed == 0)
+                // This changed the arrow's y axis position based off of the user's input.
+                if (buttonPressed == 0)
                 {
                     if (Keyboard.GetState().IsKeyDown(Keys.Up) || Keyboard.GetState().IsKeyDown(Keys.W) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickUp))
@@ -432,7 +432,7 @@ namespace DevcadeGame
                         {
                             loadScreenArrowCurrent -= loadScreenSizeDisplacement;
                         }
-                        button_pressed = 1;
+                        buttonPressed = 1;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickDown))
@@ -441,7 +441,7 @@ namespace DevcadeGame
                         {
                             loadScreenArrowCurrent += loadScreenSizeDisplacement;
                         }
-                        button_pressed = 3;
+                        buttonPressed = 3;
                     }
                 }
                 else
@@ -449,12 +449,12 @@ namespace DevcadeGame
                     if (Keyboard.GetState().IsKeyUp(Keys.Up) && Keyboard.GetState().IsKeyUp(Keys.W) ||
                          Input.GetButtonUp(1, Input.ArcadeButtons.StickUp))
                     {
-                        if (button_pressed == 1) { button_pressed = 0; }
+                        if (buttonPressed == 1) { buttonPressed = 0; }
                     }
                     if (Keyboard.GetState().IsKeyUp(Keys.Down) && Keyboard.GetState().IsKeyUp(Keys.S) ||
                          Input.GetButtonUp(1, Input.ArcadeButtons.StickDown))
                     {
-                        if (button_pressed == 3) { button_pressed = 0; }
+                        if (buttonPressed == 3) { buttonPressed = 0; }
                     }
                 }
 
@@ -468,25 +468,25 @@ namespace DevcadeGame
                     switch (loadScreenArrowCurrent)
                     {
                         // Computer cases:
-                        case 127:  initializeMaze(50, 25);  break;
-                        case 217:  initializeMaze(40, 20);  break;
-                        case 307:  initializeMaze(32, 16);  break;
-                        case 397:  initializeMaze(20, 10);  break;
-                        case 487:  initializeMaze(16, 8);   break;
-                        case 577:  initializeMaze(10, 5);   break;
-                        case 667:  initializeMaze(8, 4);    break;
-                        case 757:  initializeMaze(4, 2);    break;
-                        case 847:  initializeMaze(2, 1);    break;
+                        case 127:  InitializeMaze(50, 25);  break;
+                        case 217:  InitializeMaze(40, 20);  break;
+                        case 307:  InitializeMaze(32, 16);  break;
+                        case 397:  InitializeMaze(20, 10);  break;
+                        case 487:  InitializeMaze(16, 8);   break;
+                        case 577:  InitializeMaze(10, 5);   break;
+                        case 667:  InitializeMaze(8, 4);    break;
+                        case 757:  InitializeMaze(4, 2);    break;
+                        case 847:  InitializeMaze(2, 1);    break;
                         // Devcade cases (NO 32 by 16):
-                        case 322:  initializeMaze(80, 40);  break;
-                        case 547:  initializeMaze(50, 25);  break;
-                        case 772:  initializeMaze(40, 20);  break;
-                        case 997:  initializeMaze(20, 10);  break;
-                        case 1222: initializeMaze(16, 8);   break;
-                        case 1447: initializeMaze(10, 5);   break;
-                        case 1672: initializeMaze(8, 4);    break;
-                        case 1897: initializeMaze(4, 2);    break;
-                        case 2122: initializeMaze(2, 1);    break;
+                        case 322:  InitializeMaze(80, 40);  break;
+                        case 547:  InitializeMaze(50, 25);  break;
+                        case 772:  InitializeMaze(40, 20);  break;
+                        case 997:  InitializeMaze(20, 10);  break;
+                        case 1222: InitializeMaze(16, 8);   break;
+                        case 1447: InitializeMaze(10, 5);   break;
+                        case 1672: InitializeMaze(8, 4);    break;
+                        case 1897: InitializeMaze(4, 2);    break;
+                        case 2122: InitializeMaze(2, 1);    break;
                     }
 
                     // This sets the current screen type to the maze screen.
@@ -496,49 +496,49 @@ namespace DevcadeGame
             else if (screenType == ScreenType.MazeScreen) // If we are in the maze screen
             {
                 // This updates the completed variable if your make it to the end of the maze.
-                if (x_index == topRightX && y_index == topRightY && completedMaze == false)
+                if (xIndex == topRightX && yIndex == topRightY && completedMaze == false)
                 {
                     completedMaze = true;
                 }
 
                 // This takes the x, y coordinates and makes each a matching value to fit in the grid.
-                converted_x = (x_index - bottomLeftX) / blockSizeC;
-                converted_y = (bottomLeftY - y_index) / blockSizeC;
+                convertedX = (xIndex - bottomLeftX) / blockSizeC;
+                convertedY = (bottomLeftY - yIndex) / blockSizeC;
 
                 // This initializes the block value in the grid based off of the current position.
-                currentBlock = blockGrid1.getBlockAt(converted_y, converted_x);
+                currentBlock = blockGrid1.GetBlockAt(convertedY, convertedX);
 
                 // This changes the direction variable of the arrow.
                 // It also changes the position variables if it is possible.
-                if (button_pressed == 0)
+                if (buttonPressed == 0)
                 {
                     if (Keyboard.GetState().IsKeyDown(Keys.Up) || Keyboard.GetState().IsKeyDown(Keys.W) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickUp))
                     {
                         direction = "N";
-                        if (y_index != topRightY && !currentBlock.hasNorthWall()) { y_index -= blockSizeC; }
-                        button_pressed = 1;
+                        if (yIndex != topRightY && !currentBlock.HasNorthWall()) { yIndex -= blockSizeC; }
+                        buttonPressed = 1;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.D) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickRight))
                     {
                         direction = "E";
-                        if (x_index != topRightX && !currentBlock.hasEastWall()) { x_index += blockSizeC; }
-                        button_pressed = 2;
+                        if (xIndex != topRightX && !currentBlock.HasEastWall()) { xIndex += blockSizeC; }
+                        buttonPressed = 2;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickDown))
                     {
                         direction = "S";
-                        if (y_index != bottomLeftY && !currentBlock.hasSouthWall()) { y_index += blockSizeC; }
-                        button_pressed = 3;
+                        if (yIndex != bottomLeftY && !currentBlock.HasSouthWall()) { yIndex += blockSizeC; }
+                        buttonPressed = 3;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.A) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickLeft))
                     {
                         direction = "W";
-                        if (x_index != bottomLeftX && !currentBlock.hasWestWall()) { x_index -= blockSizeC; }
-                        button_pressed = 4;
+                        if (xIndex != bottomLeftX && !currentBlock.HasWestWall()) { xIndex -= blockSizeC; }
+                        buttonPressed = 4;
                     }
                 }
                 else
@@ -546,22 +546,22 @@ namespace DevcadeGame
                     if (Keyboard.GetState().IsKeyUp(Keys.Up) && Keyboard.GetState().IsKeyUp(Keys.W) ||
                          Input.GetButtonUp(1, Input.ArcadeButtons.StickUp))
                     {
-                        if (button_pressed == 1) { button_pressed = 0; }
+                        if (buttonPressed == 1) { buttonPressed = 0; }
                     }
                     if (Keyboard.GetState().IsKeyUp(Keys.Right) && Keyboard.GetState().IsKeyUp(Keys.D) ||
                          Input.GetButtonUp(1, Input.ArcadeButtons.StickRight))
                     {
-                        if (button_pressed == 2) { button_pressed = 0; }
+                        if (buttonPressed == 2) { buttonPressed = 0; }
                     }
                     if (Keyboard.GetState().IsKeyUp(Keys.Down) && Keyboard.GetState().IsKeyUp(Keys.S) ||
                          Input.GetButtonUp(1, Input.ArcadeButtons.StickDown))
                     {
-                        if (button_pressed == 3) { button_pressed = 0; }
+                        if (buttonPressed == 3) { buttonPressed = 0; }
                     }
                     if (Keyboard.GetState().IsKeyUp(Keys.Left) && Keyboard.GetState().IsKeyUp(Keys.A) ||
                          Input.GetButtonUp(1, Input.ArcadeButtons.StickLeft))
                     {
-                        if (button_pressed == 4) { button_pressed = 0; }
+                        if (buttonPressed == 4) { buttonPressed = 0; }
                     }
                 }
             } 
@@ -616,7 +616,7 @@ namespace DevcadeGame
                 _spriteBatch.Draw(stopSign, stopRectangle, Color.White);
 
                 // This draws the maze for blockGrid1.
-                blockGrid1.drawMaze(mazePixelXStart, mazePixelYEnd, line, _spriteBatch);
+                blockGrid1.DrawMaze(mazePixelXStart, mazePixelYEnd, line, _spriteBatch);
 
                 // This displays a message when you have or have not completed the maze.
                 if (!completedMaze)
@@ -631,7 +631,7 @@ namespace DevcadeGame
                 }
 
                 // This initializes the current position of the arrow in the maze screen.
-                arrowPosition = new Rectangle(x_index, y_index, blockSize8, blockSize8);
+                arrowPosition = new Rectangle(xIndex, yIndex, blockSize8, blockSize8);
 
                 // This draws the corresponding arrow based off of the current direction and x & y position.
                 if (direction == "N") { _spriteBatch.Draw(northArrow, arrowPosition, Color.White); }

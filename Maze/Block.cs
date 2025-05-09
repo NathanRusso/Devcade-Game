@@ -19,8 +19,12 @@ namespace DevcadeGame
         private bool visited;
         private bool inTheMaze;
 
-        // This creates the Block with specific x and y values.
-        // All of the walls exist, and it hasn't been visited or added to the maze.
+        /// <summary>
+        /// Creates the Block with specific x and y values.
+        /// All of the walls exist, and it hasn't been visited or added to the maze.
+        /// </summary>
+        /// <param name="_yIndex"> The y index of the Block. </param>
+        /// <param name="_xIndex"> The x index of the Block. </param>
         public Block(int _yIndex, int _xIndex)
         {
             yIndex = _yIndex;
@@ -33,7 +37,7 @@ namespace DevcadeGame
             inTheMaze = false;
         }
 
-        // This resets all of the values except for the xIndex and yIndex.
+        /// <summary> Resets all of the values except for the xIndex and yIndex. </summary>
         public void Reset()
         {
             northWall = true;
@@ -44,49 +48,51 @@ namespace DevcadeGame
             inTheMaze = false;
         }
 
-        // This returns the Block's y coordinate.
-        public int GetYCoordinate() { return yIndex; }
+        /// <returns> Whether a Block has been added to the maze. </returns>
+        public bool IsInTheMaze() { return inTheMaze == true; }
 
-        // This returns the Block's x coordinate.
-        public int GetXCoordinate() { return xIndex; }
+        /// <returns>Whether a Block has NOT been added to the maze. </returns>
+        public bool IsNotInTheMaze() { return inTheMaze == false; }
 
-        // This returns whether a Block has a north wall.
-        public bool HasNorthWall() { return northWall; }
-
-        // This returns whether a Block has a east wall.
-        public bool HasEastWall() { return eastWall; }
-
-        // This returns whether a Block has a south wall.
-        public bool HasSouthWall() { return southWall; }
-
-        // This returns whether a Block has a west wall.
-        public bool HasWestWall() { return westWall; }
-
-        // This returns whether a Block has been visited.
-        public bool HasBeenVisited() { return visited; }
-
-        // This returns whether a Block has been added to the maze.
-        public bool IsInTheMaze() { return inTheMaze; }
-
-        // This sets the north wall to a given boolean.
-        public void SetNorthWall(bool north) { northWall = north; }
-
-        // This sets the east wall to a given boolean.
-        public void SetEastWall(bool east) { eastWall = east; }
-
-        // This sets the south wall to a given boolean.
-        public void SetSouthWall(bool south) { southWall = south; }
-
-        // This sets the west wall to a given boolean.
-        public void SetWestWall(bool west) { westWall = west; }
-
-        // This sets the Block's visited value to a given boolean.
-        public void SetVisitedTo(bool visit) { visited = visit; }
-
-        // This changes the maze value to true since a Block has been added to the maze.
+        /// <summary> Sets the Block's in the maze value to true. </returns>
         public void AddToTheMaze() { inTheMaze = true; }
 
-        // This changes the maze value to false since a Block has been removed from the maze.
-        public void removeFromTheMaze() { inTheMaze = false; }
+
+        /// <returns> Whether a Block has been visited. </returns>
+        public bool IsVisited() { return visited == true; }
+
+        /// <returns> Whether a Block has NOT been visited. </returns>
+        public bool IsNotVisited() { return visited == false; }
+
+        /// <summary> Sets the Block's visited value to true. </summary>
+        public void AddToVisited() { visited = true; }
+
+        /// <summary> Sets the Block's visited value to false. </summary>
+        public void RemoveFromVisited() { visited = false; }
+
+
+        /// <summary>Removes the north wall from the Block. </summary>
+        public void RemoveNorthWall() { northWall = false; }
+
+        /// <summary> Removes the east wall from the Block. </summary>
+        public void RemoveEastWall() { eastWall = false; }
+
+        /// <summary> Removes the south wall from the Block. </summary>
+        public void RemoveSouthWall() { southWall = false; }
+
+        /// <summary> Removes the west wall from the Block. </summary>
+        public void RemoveWestWall() { westWall = false; }
+
+        /// <returns> Whether a Block has a north wall. </returns>
+        public bool HasNorthWall() { return northWall; }
+
+        /// <returns> Whether a Block has a east wall. </returns>
+        public bool HasEastWall() { return eastWall; }
+
+        /// <returns> Whether a Block has a south wall. </returns>
+        public bool HasSouthWall() { return southWall; }
+
+        /// <returns> Whether a Block has a west wall. </returns>
+        public bool HasWestWall() { return westWall; }
     }
 }

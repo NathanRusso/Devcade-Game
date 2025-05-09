@@ -19,33 +19,29 @@ namespace DevcadeGame
     // availablePoints is  list of points that will contain all of the non used points for maze generation.
     public class BlockGrid
     {
-        // The 2D array of blocks that is the framework of the maze.
-        private Block[,] blockGrid;
+        // This is a list of strings for the 4 direction one can move.
+        private readonly List<string> directions = new List<string> { "N", "E", "S", "W" };
 
         // The list of all of the points that have yet to be added to the maze.
-        private List<ValueTuple<int, int>> availablePoints;
+        private readonly List<ValueTuple<int, int>> availablePoints;
+
+        // The 2D array of blocks that is the framework of the maze.
+        private readonly Block[,] blockGrid;
 
         // The number of rows and columns in the maze.
-        private int rows;
-        private int columns;
+        private readonly int rows;
+        private readonly int columns;
 
         // The size of the blocks in the maze.
-        private int blockSize;
+        private readonly int blockSize;
 
-        // It is an integer to count the number of times the generateMaze() while loop runs.
-        private int iterations = 0;
-
-        // It is an integer to track the number of points used.
-        private int pointCount = 0; // REMOVE?????
-
-        // These integers are used to help prevent a stack overflow.
-        private int countR = 0;
-        private int recursionLimit = 2600;
-
-        // This is a list of strings for the 4 direction one can move.
-        List<string> directions = new List<string> { "N", "E", "S", "W" };
-
-        // This is the BlockGrid constructor.
+        /// <summary>
+        /// This creates a new empty maze with the given number of rows and columns.
+        /// This also sets the block size based on the pixel width of the maze.
+        /// </summary>
+        /// <param name="_rows">The number of rows in the maze.</param>
+        /// <param name="_columns">The number of columns in the maze.</param>
+        /// <param name="pixelWidth">The pixel width of the maze.</param>
         public BlockGrid(int _rows, int _columns, int pixelWidth)
         {
             rows = _rows;
@@ -57,35 +53,25 @@ namespace DevcadeGame
             {
                 for (int x = 0; x < columns; x++)
                 {
-                    Block block = new Block(y, x);
-                    blockGrid[y, x] = block;
-                    ValueTuple<int, int> point = new ValueTuple<int, int>(y, x);
-                    availablePoints.Add(point);
+                    blockGrid[y, x] = new Block(y, x); // New Block
+                    availablePoints.Add(new ValueTuple<int, int>(y, x)); // New point
                 }
             }
         }
 
-
-        public int GetRows() { return rows; }
-
-        public int GetColumns() { return columns; }
-
+        /// <summary>
+        /// This gets the pixel size of the blocks in the maze.
+        /// </summary>
+        /// <returns> The pixel size of the blocks in the maze. </returns>
         public int GetBlockSize() { return blockSize; }
 
-        public int GetIterations() { return iterations; }
-
-        public int GetPointCount() { return pointCount; }
-
-        public Block[,] GetBlockGrid() { return blockGrid; }
-
-        public List<ValueTuple<int, int>> GetAvailablePoints() { return availablePoints; }
-
-        public Block GetBlockAt(int yValue, int xValue) { return blockGrid[yValue, xValue]; }
-
-        public Block GetBlockAt(ValueTuple<int, int> point) { return blockGrid[point.Item1, point.Item2]; }
-
-
-        // It draws the inner lines of the maze, not the borders.
+        /// <summary>
+        /// This draws the inner lines of the maze, not the borders.
+        /// </summary>
+        /// <param name="xStart"></param>
+        /// <param name="yEnd"></param>
+        /// <param name="innerLine"></param>
+        /// <param name="spriteBatch"></param>
         public void DrawMaze(int xStart, int yEnd, Texture2D innerLine, SpriteBatch spriteBatch)
         {
             for (int y = 0; y < rows; y++)
@@ -121,10 +107,235 @@ namespace DevcadeGame
             }
         }
 
-        // It generates a randomized maze using Wilson's algorithm.
-        // The following 5 private functions all help this function run.
+        /// <summary>
+        /// This gets the block at the given coordinates in the maze.
+        /// </summary>
+        /// <returns> The Block at the given coordinates. </returns>
+        public Block GetBlockAt(int yValue, int xValue) { return blockGrid[yValue, xValue]; }
+
+        /// <summary>
+        /// This gets the block at the given tuple of coordinates in the maze.
+        /// </summary>
+        /// <returns> The Block at the given coordinates. </returns>
+        public Block GetBlockAt(ValueTuple<int, int> point) { return blockGrid[point.Item1, point.Item2]; }
+
+
+        /// <summary>
+        /// This sets the point's block to in the maze.
+        /// It also removes the point from the available points.
+        /// </summary>
+        /// <param name="point">The point to remove.</param>
+        private void AddBlockRemovePoint(ValueTuple<int, int> point) {
+            GetBlockAt(point).RemoveFromVisited();
+            GetBlockAt(point).AddToTheMaze();
+            availablePoints.Remove(point);
+        }
+
+        /// <summary>
+        /// This removes a loop in the visited points.
+        /// The unnecessary points are removed and the blocks are reset.
+        /// </summary>
+        /// <param name="next">The next point to check.</param>
+        /// <param name="visited">The list of visited points.</param>
+        private void RemoveLoop(ValueTuple<int, int> next, List<ValueTuple<int, int>> visited) {
+            // This saves the initial length of visited
+            int length = visited.Count;
+
+            // This saves the index of the point after the duplicate
+            int after = visited.IndexOf(next) + 1;
+
+            // This resets all blocks after the duplicate
+            for (int i = after; i < length; i++)
+            {
+                GetBlockAt(visited[i]).Reset();
+            }
+
+            // This removes the loop from the path
+            visited.RemoveRange(after, length - after);
+        }
+
+        /// <summary>
+        /// This generates a path in the maze starting at the given point.
+        /// </summary>
+        /// <param name="start">The starting point of the path.</param>
+        /// <param name="visited">The list of visited points.</param>
+        private void GeneratePath(ValueTuple<int, int> start, List<ValueTuple<int, int>> visited) {
+            // This saves the current point and block and creates a next point
+            ValueTuple<int, int> current = start;
+            Block currentBlock = GetBlockAt(current);
+            ValueTuple<int, int> next;
+
+            // This loops until the current block is in the maze, the path is complete
+            while (currentBlock.IsNotInTheMaze()) {
+                // This generates a random direction for the path to go
+                string direction = directions[new Random().Next(0, 4)];
+
+                // This move the maze path in the direction if possible
+                if (direction == "N" && current.Item1 != 0)
+                {
+                    // This gets the next point and block in the maze
+                    next = new ValueTuple<int, int>(current.Item1 - 1, current.Item2);
+                    Block nextBlock = GetBlockAt(next);
+
+                    // This decides what to do with the next block
+                    if (nextBlock.IsVisited())
+                    {
+                        // A loop in the path need to be removed
+                        RemoveLoop(next, visited);
+                    } 
+                    else
+                    {
+                        // This opens the blocks' walls so the path can go through
+                        currentBlock.RemoveNorthWall();
+                        nextBlock.RemoveSouthWall();
+
+                        if (nextBlock.IsNotInTheMaze())
+                        {
+                            // This saves the next blocks as visited
+                            nextBlock.AddToVisited();
+                            visited.Add(next);
+                        }
+                    }
+
+                    // This moves the path onto the next point
+                    current = next;
+                    currentBlock = GetBlockAt(current);
+
+                }
+                else if (direction == "E" && current.Item2 != columns - 1) 
+                {
+                    // This gets the next point and block in the maze
+                    next = new ValueTuple<int, int>(current.Item1, current.Item2 + 1);
+                    Block nextBlock = GetBlockAt(next);
+
+                    // This decides what to do with the next block
+                    if (nextBlock.IsVisited())
+                    {
+                        // A loop in the path need to be removed
+                        RemoveLoop(next, visited);
+                    }
+                    else
+                    {
+                        // This opens the blocks' walls so the path can go through
+                        currentBlock.RemoveEastWall();
+                        nextBlock.RemoveWestWall();
+
+                        if (nextBlock.IsNotInTheMaze())
+                        {
+                            // This saves the next blocks as visited
+                            nextBlock.AddToVisited();
+                            visited.Add(next);
+                        }
+                    }
+
+                    // This moves the path onto the next point
+                    current = next;
+                    currentBlock = GetBlockAt(current);
+
+                }
+                else if (direction == "S" && current.Item1 != rows - 1)
+                {
+                    // This gets the next point and block in the maze
+                    next = new ValueTuple<int, int>(current.Item1 + 1, current.Item2);
+                    Block nextBlock = GetBlockAt(next);
+
+                    // This decides what to do with the next block
+                    if (nextBlock.IsVisited())
+                    {
+                        // A loop in the path need to be removed
+                        RemoveLoop(next, visited);
+                    } 
+                    else
+                    {
+                        // This opens the blocks' walls so the path can go through
+                        currentBlock.RemoveSouthWall();
+                        nextBlock.RemoveNorthWall();
+
+                        if (nextBlock.IsNotInTheMaze())
+                        {
+                            // This saves the next blocks as visited
+                            nextBlock.AddToVisited();
+                            visited.Add(next);
+                        }
+                    }
+
+                    // This moves the path onto the next point
+                    current = next;
+                    currentBlock = GetBlockAt(current);
+
+                }
+                else if (direction == "W" && current.Item2 != 0)
+                {
+                    // This gets the next point and block in the maze
+                    next = new ValueTuple<int, int>(current.Item1, current.Item2 - 1);
+                    Block nextBlock = GetBlockAt(next);
+
+                    // This decides what to do with the next block
+                    if (nextBlock.IsVisited())
+                    {
+                        // A loop in the path need to be removed
+                        RemoveLoop(next, visited);
+                    } 
+                    else
+                    {
+                        // This opens the blocks' walls so the path can go through
+                        currentBlock.RemoveWestWall();
+                        nextBlock.RemoveEastWall();
+
+                        if (nextBlock.IsNotInTheMaze())
+                        {
+                            // This saves the next blocks as visited
+                            nextBlock.AddToVisited();
+                            visited.Add(next);
+                        }
+                    }
+
+                    // This moves the path onto the next point
+                    current = next;
+                    currentBlock = GetBlockAt(current);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This generates the maze using a variation of Wilson's Maze Algorithm.
+        /// </summary>
         public void GenerateMaze()
         {
+            // This gets the start index, a random integer from 0 to the number of available points - 1
+            // This then gets the first point to start the maze generation using the first index
+            int firstIndex = new Random().Next(0, availablePoints.Count);
+            ValueTuple<int, int> firstPoint = availablePoints[firstIndex];
+
+            // This adds the first block to the maze and removes the first point from the available points
+            GetBlockAt(firstPoint).AddToTheMaze();
+            availablePoints.Remove(firstPoint);
+
+            // This loops until there are no more available points to add to the maze
+            while (availablePoints.Count > 0)
+            {
+                // This gets a start point for the new path in the maze.
+                ValueTuple<int, int> startPoint = availablePoints[new Random().Next(0, availablePoints.Count)];
+
+                // This will hold the points in the maze that will be added in as a new path
+                List<ValueTuple<int, int>> visitedPoints = new List<ValueTuple<int, int>> { startPoint};
+
+                // This marks the start point as visited
+                GetBlockAt(startPoint).AddToVisited();
+
+                // This creates a new path of points for the maze
+                GeneratePath(startPoint, visitedPoints);
+
+                // This adds all of the visited points to the maze
+                // It then removes the points from the available points
+                foreach (var point in visitedPoints)
+                {
+                    AddBlockRemovePoint(point);
+                }
+            }
+        }
+
+            /*
             // A random point of coordinates is generated.
             // The block at said coordinates is added to the maze.
             // The point of coordinates is then removed from available points.
@@ -163,31 +374,18 @@ namespace DevcadeGame
                 // It adds one to the count of iterations.
                 iterations++;
             }
-        }
-
-        // It generates a random point from the list of available points.
+            */
+        
+        /*// It generates a random point from the list of available points.
         private ValueTuple<int, int> GenerateRandomAvailablePoint()
         {
             Random random = new Random();
             int index = random.Next(0, availablePoints.Count);
             ValueTuple<int, int> point = availablePoints[index];
             return point;
-        }
+        }*/
 
-        // It generates a random direction between north, east, south, and west.
-        // Given a previous direction, if stated, it removes the opposite as a possibility.
-        private string GenerateRandomDirection()
-        {
-            countR++;
-            if (countR >= recursionLimit)
-            {
-                countR = 0;
-                return "";
-            }
-            Random random = new Random();
-            return directions[random.Next(0, 4)];
-        }
-        
+        /*
         // It adds back the correct wall value based on change in position between itself and the previous point.
         private void ReAddWallValue(ValueTuple<int, int> current, ValueTuple<int, int> prior)
         {
@@ -240,6 +438,8 @@ namespace DevcadeGame
             GetBlockAt(current).SetVisitedTo(true);
             return updatedPoints;
         }
+        */
+
 
         /* This function returns a list of all of the points visited.
         * Given a chosen start point, it randomly grabs the next direction.
@@ -251,8 +451,8 @@ namespace DevcadeGame
         *     - The point is added to the list and wall values are adjusted.
         *     - If the next point is already in the maze, the function ends.
         *     - If not, the functions calls itself with a new start point.
-        * If it never enters any of the 4 statements, it returns it self and tries again. */
-        private List<ValueTuple<int, int>> GeneratePath(List<ValueTuple<int, int>> visitedPoints, ValueTuple<int, int> start, int RecursiveCount)
+        * If it never enters any of the 4 statements, it returns it self and tries again. *
+        private List<ValueTuple<int, int>> GeneratePath(ValueTuple<int, int> start, List<ValueTuple<int, int>> visitedPoint)
         {
             string direction = GenerateRandomDirection();
             if (direction == "")
@@ -333,5 +533,8 @@ namespace DevcadeGame
                 return GeneratePath(visitedPoints, start, RecursiveCount);
             }
         }
+    
+        */
+    
     }
 }

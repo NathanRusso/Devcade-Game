@@ -65,10 +65,10 @@ namespace DevcadeGame
         public bool IsNotVisited() { return !visited; }
 
         /// <summary> Sets the Block's visited value to true. </summary>
-        public void AddToVisited() { visited = true; }
+        public void AddVisit() { visited = true; }
 
         /// <summary> Sets the Block's visited value to false. </summary>
-        public void RemoveFromVisited() { visited = false; }
+        public void RemoveVisit() { visited = false; }
 
 
         /// <returns> Whether a Block has a north wall. </returns>

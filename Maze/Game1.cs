@@ -66,10 +66,10 @@ namespace DevcadeGame
         private int mazePixelWidth;
 
         // This declares the start and end pixel locations for the x-axis and y-axis of the maze.
-        private int mazePixelXStart;
-        private int mazePixelXEnd;
-        private int mazePixelYStart;
-        private int mazePixelYEnd;
+        private int mazePixelLeftX;
+        private int mazePixelRightX;
+        private int mazePixelTopY;
+        private int mazePixelBottomY;
 
         // This declares the middle point on the x-axis.
         private int screenPixelXCenter;
@@ -108,10 +108,10 @@ namespace DevcadeGame
         private int blockSize1;
 
         // This declares integers used to mark drawing corners on the maze.
-        private int topRightX;
-        private int topRightY;
-        private int bottomLeftX;
-        private int bottomLeftY;
+        private int rightX;
+        private int leftX;
+        private int topY;
+        private int bottomY;
 
         // These are integers and a string set at your current position and direction.
         // These will change as you move.
@@ -219,22 +219,22 @@ namespace DevcadeGame
             blockSize1 = blockSizeC - blockSize9;
 
             // This initializes integers used to mark drawing corners on the maze.
-            topRightX = mazePixelXEnd - blockSize9;
-            topRightY = mazePixelYStart + blockSize1;
-            bottomLeftX = mazePixelXStart + blockSize1;
-            bottomLeftY = mazePixelYEnd - blockSize9;
+            rightX = mazePixelRightX - blockSize9;
+            topY = mazePixelTopY + blockSize1;
+            leftX = mazePixelLeftX + blockSize1;
+            bottomY = mazePixelBottomY - blockSize9;
 
             // This sets your starting position and direction.
-            xIndex = bottomLeftX;
-            yIndex = bottomLeftY;
+            xIndex = leftX;
+            yIndex = bottomY;
             direction = "N";
 
             // This generates a maze for blockGrid1.
             blockGrid1.GenerateMaze();
 
             // This initializes the start button and stop sign.
-            startRectangle = new Rectangle(bottomLeftX, bottomLeftY, blockSize8, blockSize8);
-            stopRectangle = new Rectangle(topRightX, topRightY, blockSize8, blockSize8);
+            startRectangle = new Rectangle(leftX, bottomY, blockSize8, blockSize8);
+            stopRectangle = new Rectangle(rightX, topY, blockSize8, blockSize8);
         }
 
 
@@ -303,10 +303,10 @@ namespace DevcadeGame
             mazePixelWidth = selectedList1[1];
 
             // This initializes the start and end pixel locations for the x-axis and y-axis of the maze.
-            mazePixelXStart = selectedList1[2];
-            mazePixelXEnd = selectedList1[3];
-            mazePixelYStart = selectedList1[4];
-            mazePixelYEnd = selectedList1[5];
+            mazePixelLeftX = selectedList1[2];
+            mazePixelRightX = selectedList1[3];
+            mazePixelTopY = selectedList1[4];
+            mazePixelBottomY = selectedList1[5];
 
             // This initializes the middle point on the x-axis.
             screenPixelXCenter = selectedList1[6];
@@ -388,10 +388,10 @@ namespace DevcadeGame
              *  eastRectangle = new Rectangle(410, 150, 4, 800) or (1040, 375, 12, 2000);
              *  southRectangle = new Rectangle(7, 950, 407, 3) or (31, 2375, 1021, 9);
              *  westRectangle = new Rectangle(7, 150, 4, 800) or (31, 375, 12, 2000);  */
-            northRectangle = new Rectangle(borderPixel1, mazePixelYStart - borderPixel3 + 1, borderPixel4, borderPixel3);
-            eastRectangle = new Rectangle(mazePixelXEnd, mazePixelYStart, borderPixel2, mazePixelHeight);
-            southRectangle = new Rectangle(borderPixel1, mazePixelYEnd, borderPixel4, borderPixel3);
-            westRectangle = new Rectangle(borderPixel1, mazePixelYStart, borderPixel2, mazePixelHeight);
+            northRectangle = new Rectangle(borderPixel1, mazePixelTopY - borderPixel3 + 1, borderPixel4, borderPixel3);
+            eastRectangle = new Rectangle(mazePixelRightX, mazePixelTopY, borderPixel2, mazePixelHeight);
+            southRectangle = new Rectangle(borderPixel1, mazePixelBottomY, borderPixel4, borderPixel3);
+            westRectangle = new Rectangle(borderPixel1, mazePixelTopY, borderPixel2, mazePixelHeight);
         }
 
 
@@ -459,7 +459,7 @@ namespace DevcadeGame
                 }
 
                 // This initializes the current position of the arrow in the loading screen.
-                vCurrentPosition = new Rectangle(mazePixelYStart, loadScreenArrowCurrent, drawPositionY2, drawPositionY2);
+                vCurrentPosition = new Rectangle(mazePixelTopY, loadScreenArrowCurrent, drawPositionY2, drawPositionY2);
 
                 // This initializes the maze and changes the screen type if the user has selected a maze size.
                 if (Keyboard.GetState().IsKeyDown(Keys.Enter) || Input.GetButton(1, Input.ArcadeButtons.A1))
@@ -496,14 +496,14 @@ namespace DevcadeGame
             else if (screenType == ScreenType.MazeScreen) // If we are in the maze screen
             {
                 // This updates the completed variable if your make it to the end of the maze.
-                if (xIndex == topRightX && yIndex == topRightY && completedMaze == false)
+                if (xIndex == rightX && yIndex == topY && completedMaze == false)
                 {
                     completedMaze = true;
                 }
 
                 // This takes the x, y coordinates and makes each a matching value to fit in the grid.
-                convertedX = (xIndex - bottomLeftX) / blockSizeC;
-                convertedY = (bottomLeftY - yIndex) / blockSizeC;
+                convertedX = (xIndex - leftX) / blockSizeC;
+                convertedY = (yIndex - topY) / blockSizeC;
 
                 // This initializes the block value in the grid based off of the current position.
                 currentBlock = blockGrid1.GetBlockAt(convertedY, convertedX);
@@ -516,28 +516,28 @@ namespace DevcadeGame
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickUp))
                     {
                         direction = "N";
-                        if (yIndex != topRightY && !currentBlock.HasNorthWall()) { yIndex -= blockSizeC; }
+                        if (yIndex != topY && !currentBlock.HasNorthWall()) { yIndex -= blockSizeC; }
                         buttonPressed = 1;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.D) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickRight))
                     {
                         direction = "E";
-                        if (xIndex != topRightX && !currentBlock.HasEastWall()) { xIndex += blockSizeC; }
+                        if (xIndex != rightX && !currentBlock.HasEastWall()) { xIndex += blockSizeC; }
                         buttonPressed = 2;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickDown))
                     {
                         direction = "S";
-                        if (yIndex != bottomLeftY && !currentBlock.HasSouthWall()) { yIndex += blockSizeC; }
+                        if (yIndex != bottomY && !currentBlock.HasSouthWall()) { yIndex += blockSizeC; }
                         buttonPressed = 3;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.A) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickLeft))
                     {
                         direction = "W";
-                        if (xIndex != bottomLeftX && !currentBlock.HasWestWall()) { xIndex -= blockSizeC; }
+                        if (xIndex != leftX && !currentBlock.HasWestWall()) { xIndex -= blockSizeC; }
                         buttonPressed = 4;
                     }
                 }
@@ -616,7 +616,7 @@ namespace DevcadeGame
                 _spriteBatch.Draw(stopSign, stopRectangle, Color.White);
 
                 // This draws the maze for blockGrid1.
-                blockGrid1.DrawMaze(mazePixelXStart, mazePixelYEnd, line, _spriteBatch);
+                blockGrid1.DrawMaze(mazePixelLeftX, mazePixelTopY, line, _spriteBatch);
 
                 // This displays a message when you have or have not completed the maze.
                 if (!completedMaze)

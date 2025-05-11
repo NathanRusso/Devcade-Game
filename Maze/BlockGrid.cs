@@ -19,8 +19,8 @@ namespace DevcadeGame
     // availablePoints is  list of points that will contain all of the non used points for maze generation.
     public class BlockGrid
     {
-        // This is a list of strings for the 4 direction one can move.
-        private readonly List<string> directions = new List<string> { "N", "E", "S", "W" };
+        // These are the 4 directions a player can move.
+        private enum Direction { North, East, South, West };
 
         // The list of all of the points that have yet to be added to the maze.
         private readonly List<ValueTuple<int, int>> availablePoints = new List<ValueTuple<int, int>> { };
@@ -31,8 +31,10 @@ namespace DevcadeGame
         // The 2D array of blocks that is the framework of the maze.
         private readonly Block[,] blockGrid;
 
-        // The number of rows and columns in the maze.
+        // The number of rows in the maze.
         private readonly int rows;
+
+        // The number of columns in the maze.
         private readonly int columns;
 
         // The size of the blocks in the maze.
@@ -43,9 +45,10 @@ namespace DevcadeGame
         /// This creates a new empty maze with the given number of rows and columns.
         /// This also sets the block size based on the pixel width of the maze.
         /// </summary>
-        /// <param name="_rows">The number of rows in the maze.</param>
-        /// <param name="_columns">The number of columns in the maze.</param>
-        /// <param name="pixelWidth">The pixel width of the maze.</param>
+        /// <param name="_rows">The number of rows in the maze </param>
+        /// <param name="_columns">The number of columns in the maze </param>
+        /// <param name="pixelWidth">The pixel width of the maze </param>
+        /// <returns> A BlockGrid object </returns>
         public BlockGrid(int _rows, int _columns, int pixelWidth)
         {
             rows = _rows;
@@ -71,11 +74,11 @@ namespace DevcadeGame
         /// <summary>
         /// This draws the inner lines of the maze, not the borders.
         /// </summary>
-        /// <param name="xStart"></param>
-        /// <param name="yEnd"></param>
-        /// <param name="innerLine"></param>
-        /// <param name="spriteBatch"></param>
-        public void DrawMaze(int xStart, int yEnd, Texture2D innerLine, SpriteBatch spriteBatch)
+        /// <param name="leftX"> The left most x position of the maze </param>
+        /// <param name="topY"> The top most y position of the maze </param>
+        /// <param name="innerLine"> The Texture2D for drawing </param>
+        /// <param name="spriteBatch"> The SpriteBatch for drawing </param>
+        public void DrawMaze(int leftX, int topY, Texture2D innerLine, SpriteBatch spriteBatch)
         {
             for (int y = 0; y < rows; y++)
             {
@@ -84,27 +87,27 @@ namespace DevcadeGame
                     Block spot = GetBlockAt(y, x);
                     if (spot.HasNorthWall())
                     {
-                        Rectangle nLinePosition = new Rectangle(xStart + (x * blockSize),
-                            yEnd - ((y + 1) * blockSize), blockSize, 1);
-                        spriteBatch.Draw(innerLine, nLinePosition, Color.Red);
+                        Rectangle nLinePosition = new Rectangle(leftX + (x * blockSize),
+                            topY + (y * blockSize), blockSize, 1);
+                        spriteBatch.Draw(innerLine, nLinePosition, Color.White);
                     }
                     if (spot.HasEastWall())
                     {
-                        Rectangle eLinePosition = new Rectangle(xStart + ((x + 1) * blockSize),
-                            yEnd - ((y + 1) * blockSize), 1, blockSize);
-                        spriteBatch.Draw(innerLine, eLinePosition, Color.Beige);
+                        Rectangle eLinePosition = new Rectangle(leftX + ((x + 1) * blockSize),
+                            topY + (y * blockSize), 1, blockSize);
+                        spriteBatch.Draw(innerLine, eLinePosition, Color.White);
                     }
                     if (spot.HasSouthWall())
                     {
-                        Rectangle sLinePosition = new Rectangle(xStart + (x * blockSize),
-                            yEnd - (y * blockSize), blockSize, 1);
-                        spriteBatch.Draw(innerLine, sLinePosition, Color.Gray);
+                        Rectangle sLinePosition = new Rectangle(leftX + (x * blockSize),
+                            topY + ((y + 1) * blockSize), blockSize, 1);
+                        spriteBatch.Draw(innerLine, sLinePosition, Color.White);
                     }
                     if (spot.HasWestWall())
                     {
-                        Rectangle wLinePosition = new Rectangle(xStart + (x * blockSize),
-                            yEnd - ((y + 1) * blockSize), 1, blockSize);
-                        spriteBatch.Draw(innerLine, wLinePosition, Color.Green);
+                        Rectangle wLinePosition = new Rectangle(leftX + (x * blockSize),
+                            topY + (y * blockSize), 1, blockSize);
+                        spriteBatch.Draw(innerLine, wLinePosition, Color.White);
                     }
                 }
             }
@@ -113,13 +116,16 @@ namespace DevcadeGame
         /// <summary>
         /// This gets the block at the given coordinates in the maze.
         /// </summary>
-        /// <returns> The Block at the given coordinates. </returns>
+        /// <param name="yValue"> The y index of the Block </param>
+        /// <param name="xValue"> The x index of the Block </param>
+        /// <returns> The Block at the given coordinates </returns>
         public Block GetBlockAt(int yValue, int xValue) { return blockGrid[yValue, xValue]; }
 
         /// <summary>
         /// This gets the block at the given tuple of coordinates in the maze.
         /// </summary>
-        /// <returns> The Block at the given coordinates. </returns>
+        /// <param name="point"> The point to get the Block at </param>
+        /// <returns> The Block at the given coordinates </returns>
         public Block GetBlockAt(ValueTuple<int, int> point) { return blockGrid[point.Item1, point.Item2]; }
 
 
@@ -127,7 +133,7 @@ namespace DevcadeGame
         /// This sets the point's block to in the maze.
         /// It also removes the point from the available points.
         /// </summary>
-        /// <param name="point">The point to remove.</param>
+        /// <param name="point"> The point to remove </param>
         private void AddBlockRemovePoint(ValueTuple<int, int> point) {
             Block block = GetBlockAt(point);
             block.RemoveVisit();
@@ -137,10 +143,10 @@ namespace DevcadeGame
 
         /// <summary>
         /// This removes a loop in the visited points.
-        /// The unnecessary points are removed and the blocks are reset.
+        /// The blocks are reset, walls are fixed, and unnecessary points are removed.
         /// </summary>
-        /// <param name="next">The next point to check.</param>
-        /// <param name="visited">The list of visited points.</param>
+        /// <param name="next"> The next point to check </param>
+        /// <param name="visited"> The list of visited points </param>
         private void RemoveLoop(ValueTuple<int, int> next, List<ValueTuple<int, int>> visited) {
             // This saves the initial length of visited
             int length = visited.Count;
@@ -150,22 +156,10 @@ namespace DevcadeGame
             ValueTuple<int, int> after = visited[afterIndex];
 
             // This fixes the walls for the duplicated point
-            /*if (next.Item1 - 1 == after.Item1)
-            {
-                GetBlockAt(next).AddNorthWall();
-            }
-            else if (next.Item2 + 1 == after.Item2)
-            {
-                GetBlockAt(next).AddEastWall();
-            }
-            else if (next.Item1 + 1 == after.Item1)
-            {
-                GetBlockAt(next).AddSouthWall();
-            }
-            else if (next.Item2 - 1 == after.Item2)
-            {
-                GetBlockAt(next).AddWestWall();
-            }*/
+            if (next.Item1 - 1 == after.Item1) { GetBlockAt(next).AddNorthWall(); }
+            else if (next.Item2 + 1 == after.Item2) { GetBlockAt(next).AddEastWall(); }
+            else if (next.Item1 + 1 == after.Item1) { GetBlockAt(next).AddSouthWall(); }
+            else if (next.Item2 - 1 == after.Item2) { GetBlockAt(next).AddWestWall(); }
 
             // This resets all blocks after the duplicate
             for (int i = afterIndex; i < length; i++)
@@ -188,14 +182,13 @@ namespace DevcadeGame
             Block currentBlock = GetBlockAt(current);
             ValueTuple<int, int> next;
             Block nextBlock;
-
             // This loops until the current block is in the maze, the path is complete
             while (currentBlock.IsNotInTheMaze()) {
                 // This generates a random direction for the path to go
-                string direction = directions[random.Next(0, 4)];
+                Direction dir = (Direction) random.Next(0, 4);
 
                 // This move the maze path in the direction if possible
-                if (direction == "N" && current.Item1 != 0)
+                if (dir == Direction.North && current.Item1 != 0)
                 {
                     // This gets the next point and block in the maze
                     next = new ValueTuple<int, int>(current.Item1 - 1, current.Item2);
@@ -225,7 +218,7 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (direction == "E" && current.Item2 != columns - 1) 
+                else if (dir == Direction.East && current.Item2 != columns - 1) 
                 {
                     // This gets the next point and block in the maze
                     next = new ValueTuple<int, int>(current.Item1, current.Item2 + 1);
@@ -255,7 +248,7 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (direction == "S" && current.Item1 != rows - 1)
+                else if (dir == Direction.South && current.Item1 != rows - 1)
                 {
                     // This gets the next point and block in the maze
                     next = new ValueTuple<int, int>(current.Item1 + 1, current.Item2);
@@ -285,7 +278,7 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (direction == "W" && current.Item2 != 0)
+                else if (dir == Direction.West && current.Item2 != 0)
                 {
                     // This gets the next point and block in the maze
                     next = new ValueTuple<int, int>(current.Item1, current.Item2 - 1);

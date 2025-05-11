@@ -22,16 +22,16 @@ namespace DevcadeGame
         // This is a coordinate object to hold the row and column of a block.
         private struct Point
         {
-            public int Column; public int Row;
+            public int Row; public int Column;
 
             /// <summary>
             /// This is a coordinate object to hold the row and column of a block.
             /// </summary>
-            /// <param name="column"> The y value </param>
-            /// <param name="row"> The x value </param>
-            public Point(int column, int row) { Column = column; Row = row; } //y, x
+            /// <param name="row"> The y value </param>
+            /// <param name="column"> The x value </param>
+            public Point(int row, int column) { Row = row; Column = column; } // y, x
         }
-
+        
         // These are the 4 directions a player can move.
         private enum Direction { North, East, South, West };
 
@@ -139,7 +139,7 @@ namespace DevcadeGame
         /// </summary>
         /// <param name="point"> The point to get the Block at </param>
         /// <returns> The Block at the given coordinates </returns>
-        private Block GetBlockAt(Point point) { return blockGrid[point.Column, point.Row]; }
+        private Block GetBlockAt(Point point) { return blockGrid[point.Row, point.Column]; }
 
 
         /// <summary>
@@ -169,10 +169,10 @@ namespace DevcadeGame
             Point after = visited[afterIndex];
 
             // This fixes the walls for the duplicated point
-            if (next.Column - 1 == after.Column) { GetBlockAt(next).AddNorthWall(); }
-            else if (next.Row + 1 == after.Row) { GetBlockAt(next).AddEastWall(); }
-            else if (next.Column + 1 == after.Column) { GetBlockAt(next).AddSouthWall(); }
-            else if (next.Row - 1 == after.Row) { GetBlockAt(next).AddWestWall(); }
+            if (next.Row - 1 == after.Row) { GetBlockAt(next).AddNorthWall(); }
+            else if (next.Column + 1 == after.Column) { GetBlockAt(next).AddEastWall(); }
+            else if (next.Row + 1 == after.Row) { GetBlockAt(next).AddSouthWall(); }
+            else if (next.Column - 1 == after.Column) { GetBlockAt(next).AddWestWall(); }
 
             // This resets all blocks after the duplicate
             for (int i = afterIndex; i < length; i++)
@@ -201,10 +201,10 @@ namespace DevcadeGame
                 Direction dir = (Direction) random.Next(0, 4);
 
                 // This move the maze path in the direction if possible
-                if (dir == Direction.North && current.Column != 0)
+                if (dir == Direction.North && current.Row != 0)
                 {
                     // This gets the next point and block in the maze
-                    next = new Point(current.Column - 1, current.Row);
+                    next = new Point(current.Row - 1, current.Column);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -231,10 +231,10 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (dir == Direction.East && current.Row != columns - 1) 
+                else if (dir == Direction.East && current.Column != columns - 1) 
                 {
                     // This gets the next point and block in the maze
-                    next = new Point(current.Column, current.Row + 1);
+                    next = new Point(current.Row, current.Column + 1);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -261,10 +261,10 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (dir == Direction.South && current.Column != rows - 1)
+                else if (dir == Direction.South && current.Row != rows - 1)
                 {
                     // This gets the next point and block in the maze
-                    next = new Point(current.Column + 1, current.Row);
+                    next = new Point(current.Row + 1, current.Column);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -291,10 +291,10 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (dir == Direction.West && current.Row != 0)
+                else if (dir == Direction.West && current.Column != 0)
                 {
                     // This gets the next point and block in the maze
-                    next = new Point(current.Column, current.Row - 1);
+                    next = new Point(current.Row, current.Column - 1);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block

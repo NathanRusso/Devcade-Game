@@ -33,6 +33,9 @@ namespace DevcadeGame
         // This determines which screen type we are in.
         private ScreenType screenType;
 
+        // This is used to increase pixel numbers if running on Devcade.
+        private int devcadeMultiplier;
+
         // This is an integer used to determine how to move the arrow in both screen types.
         private int buttonPressed;
 
@@ -40,7 +43,6 @@ namespace DevcadeGame
         private bool completedMaze;
 
         // This declares both list of variables that must be used depending on if the game is running in Devcade.
-        private List<int> selectedList1;
         private List<string> selectedList2;
 
         // This declares the current position of the arrow in the loading screen.
@@ -50,26 +52,25 @@ namespace DevcadeGame
         private Rectangle mazeArrow;
 
         // This declares the vectors needed to draw the different possible maze sizes in the loading screen.
-        private Vector2 sizePosition_80_50; // 800x500
-        private Vector2 sizePosition_72_45; // 792x495
-        private Vector2 sizePosition_61_38; // 793x494
-        private Vector2 sizePosition_50_31; // 800x496
-        private Vector2 sizePosition_44_27; // 792x486
-        private Vector2 sizePosition_40_25; // 800x500
-        private Vector2 sizePosition_32_20; // 800x500
-        private Vector2 sizePosition_30_19; // 780x486
-        private Vector2 sizePosition_25_15; // 800x480
-        private Vector2 sizePosition_20_12; // 800x480
-        private Vector2 sizePosition_16_10; // 800x500
-        private Vector2 sizePosition_10_6;  // 800x480
-        private Vector2 sizePosition_8_5;  // 800x500
-        private Vector2 sizePosition_5_3;  // 800x480
-        private Vector2 sizePosition_4_2; // 800x400
-        private Vector2 sizePosition_2_1; // 800x400
-
+        private Vector2 sizePosition_80_50; // 800x500 -> 3200x2000
+        private Vector2 sizePosition_72_45; // 792x495 -> 3168x1980
+        private Vector2 sizePosition_61_38; // 793x494 -> 3172x1976
+        private Vector2 sizePosition_50_31; // 800x496 -> 3200x1984
+        private Vector2 sizePosition_44_27; // 792x486 -> 3168x1944
+        private Vector2 sizePosition_40_25; // 800x500 -> 3200x2000
+        private Vector2 sizePosition_32_20; // 800x500 -> 3200x2000
+        private Vector2 sizePosition_30_19; // 780x486 -> 3120x1944
+        private Vector2 sizePosition_25_15; // 800x480 -> 3200x1920
+        private Vector2 sizePosition_20_12; // 800x480 -> 3200x1920
+        private Vector2 sizePosition_16_10; // 800x500 -> 3200x2000
+        private Vector2 sizePosition_10_6;  // 800x480 -> 3200x1920
+        private Vector2 sizePosition_8_5;  // 800x500 -> 3200x2000
+        private Vector2 sizePosition_5_3;  // 800x480 -> 3200x1920
+        private Vector2 sizePosition_4_2; // 800x400 --> 3200x1600
+        private Vector2 sizePosition_2_1; // 800x400 --> 3200x1600
 
         // This declares the load screen values for the possible maze size corners and displacements.
-        private int loadSizeTopY, loadSizeLeftX, loadSizeDisplacementY, loadSizeDisplacementX; // y, x 
+        private int loadSizeTopY, loadSizeLeftX, loadSizeDisplacementY, loadSizeDisplacementX;
 
         // This declares the load screen values for the arrow corners.
         private int loadArrowLeftX, loadArrowRightX, loadArrowTopY, loadArrowBottomY;
@@ -77,19 +78,8 @@ namespace DevcadeGame
         // This declares the pixel location of the arrow in the load screen.
         private ValueTuple<int, int> loadArrowPosition;
 
-
-
-
-
-
-
-
-
         // This declares the y-axis positions for different strings that need to be drawn.
         private int drawPositionY1, drawPositionY2, drawPositionY3, drawPositionY4;
-
-
-
 
         // This declares the size of the block for the maze, along with a smaller versions.
         private int blockSize100, blockSize90, blockSize80, blockSize10;
@@ -116,10 +106,6 @@ namespace DevcadeGame
         // This declares the block value in the grid based off of the current position.
         private Block currentBlock;
 
-
-
-
-
         // This declares the Texture2D needed to draw the maze lines.
         private Texture2D line;
 
@@ -129,11 +115,8 @@ namespace DevcadeGame
         // This declares the Texture2Ds needed to draw the image sprites.
         private Texture2D northArrow, eastArrow, southArrow, westArrow, startButton, stopSign;
 
-        // This declares the Rectangles needed to draw the maze borders.
-        private Rectangle northRectangle, eastRectangle, southRectangle, westRectangle;
-
-        // This declares the start button and stop sign.
-        private Rectangle startRectangle, stopRectangle;
+        // This declares the Rectangles needed to draw the maze borders, start button, and stop sign.
+        private Rectangle northRectangle, eastRectangle, southRectangle, westRectangle, startRectangle, stopRectangle;
 
         // This declares the different widths of different displayed text. These are used to center text.
         private int textWidth1, textWidth2, textWidth3, textWidth4, textWidth5, textWidth6, textWidth7;
@@ -143,10 +126,6 @@ namespace DevcadeGame
 
         // This declares the display texts that depend on if the game is running in Devcade.
         private string text3, text7;
-
-        // This declares 3 of the texts that show the possible maze sizes.
-        // The options are slightly different depending on if the game is running in Devcade.
-        //private string mazeSizeText1, mazeSizeText2, mazeSizeText3; // HOPEFULLY REMOVE
 
 
         public Game1 game
@@ -192,10 +171,13 @@ namespace DevcadeGame
             direction = "N";
 
             // This initializes the rectangles needed to draw the four borders of the maze.
-            northRectangle = new Rectangle(mazePixelLeftX - 3, mazePixelTopY - 3, mazePixelWidth + 6, 4);
-            eastRectangle = new Rectangle(mazePixelRightX, mazePixelTopY - 3, 4, mazePixelHeight + 6);
-            southRectangle = new Rectangle(mazePixelLeftX - 3, mazePixelBottomY, mazePixelWidth + 6, 4);
-            westRectangle = new Rectangle(mazePixelLeftX - 3, mazePixelTopY - 3, 4, mazePixelHeight + 6);
+            int h3 = 3 * devcadeMultiplier;
+            int h4 = 4 * devcadeMultiplier;
+            int h6 = 6 * devcadeMultiplier;
+            northRectangle = new Rectangle(mazePixelLeftX - h3, mazePixelTopY - h3, mazePixelWidth + h6, h4);
+            eastRectangle = new Rectangle(mazePixelRightX, mazePixelTopY - h3, h4, mazePixelHeight + h6);
+            southRectangle = new Rectangle(mazePixelLeftX - h3, mazePixelBottomY, mazePixelWidth + h6, h4);
+            westRectangle = new Rectangle(mazePixelLeftX - h3, mazePixelTopY - h3, h4, mazePixelHeight + h6);
 
             // This initializes the start button and stop sign.
             startRectangle = new Rectangle(playerPixelLeftX, playerPixelBottomY, blockSize80, blockSize80);
@@ -203,9 +185,6 @@ namespace DevcadeGame
 
             // It constructs a BlockGrid with a 2D array of Blocks that has a given number of rows and columns. 
             blockGrid1 = new BlockGrid(rows, columns, blockSize100);
-            /* Y by X, with maze and block sizes.
-             * 2 by 1, with a maze size of 800x400 or  and a block size of 400 or 
-             */
 
             // This generates a maze for blockGrid1.
             blockGrid1.GenerateMaze();
@@ -238,6 +217,9 @@ namespace DevcadeGame
             // This sets the current screen type to the loading screen.
             screenType = ScreenType.LoadingScreen;
 
+            if (windowSize.Width == 540) { devcadeMultiplier = 1; /*The game is on my computer.*/ }
+            else { devcadeMultiplier = 4; /*The game is on Devcade.*/ }
+
             // This sets up the initial button and completed maze values.
             buttonPressed = 0;
             completedMaze = false;
@@ -257,97 +239,44 @@ namespace DevcadeGame
             line = new Texture2D(GraphicsDevice, 1, 1);
             line.SetData(new[] { Color.White });
 
-            // This initializes the middle point on the x-axis.
-            //screenPixelXCenter = (int)Math.Floor( (double)windowSize.Width / 2 );
-
-            // This initializes both list of variables that must be used
-            // depending on if the game is running in Devcade.
+            // This initializes both list of variables that must be used depending on if the game is running in Devcade.
             if (windowSize.Width == 540) // The game is on my computer.
             {
-                selectedList1 = new List<int> { 800, 500, 160, 950, 270,          130, 90, 847, 127,
-                                               7, 4, 3, 407, 0, 40, 70, 105};
                 selectedList2 = new List<string> { "Select the maze size.", "Press 'Back' for another maze.", 
                     "fontTitle", "fontCreator", "fontCompletedMaze" };
-                /*
-                selectedList1 = new List<int> { 800, 400, 10, 410, 150, 950, 210, 130, 90, 847, 127,
-                                               7, 4, 3, 407, 0, 40, 70, 105};
-                selectedList2 = new List<string> { "Select the maze size.", "Press 'Back' for another maze.", 
-                    "50 by 25", "40 by 20", "32 by 16", "fontTitle", "fontCreator", "fontCompletedMaze" }
-                */
             }
-            /*else // The game is on Devcade.
-            { 
-                selectedList1 = new List<int> { 2000, 1000, 40, 1040, 375, 2375, 540, 325, 225, 2122, 322,
-                                               31, 12, 9, 1021, 0, 100, 175, 260};
+            else // The game is on Devcade.
+            {
                 selectedList2 = new List<string> { "Press A1 to select a maze size.", "Press Menu1 for another maze.",
                     "fontTitle2", "fontCreator2", "fontCompletedMaze2" };
-                /*
-                selectedList1 = new List<int> { 2000, 1000, 40, 1040, 375, 2375, 540, 325, 225, 2122, 322,
-                                31, 12, 9, 1021, 0, 100, 175, 260};
-                selectedList2 = new List<string> { "Press A1 to select a maze size.", "Press Menu1 for another maze.",
-                    "80 by 40", "50 by 25", "40 by 20", "fontTitle2", "fontCreator2", "fontCompletedMaze2" };
-                *
-            }*/
+            }
 
             // This initializes the height and width of the maze in pixels.
-            mazePixelMaxHeight = 800;
-            mazePixelMaxWidth = 500;
-            mazePixelTopY = 150; // CONSTANT
+            mazePixelMaxHeight = 800 * devcadeMultiplier;
+            mazePixelTopY = 150 * devcadeMultiplier;
 
             // This initializes the load screen values for the possible maze size corners and displacements.
-            loadSizeTopY = 160;
+            loadSizeTopY = 160 * devcadeMultiplier;
             loadSizeLeftX = (int)Math.Floor( (double)windowSize.Width * 2 / 9 );
             loadSizeDisplacementY = (int)Math.Floor( (double)(windowSize.Height - loadSizeTopY) / 8 );
             loadSizeDisplacementX = (int)Math.Floor( (double)windowSize.Width / 3 );
 
             // This initializes the load screen values for the arrow corners and position.
-            loadArrowLeftX = loadSizeLeftX - 50;
+            loadArrowLeftX = loadSizeLeftX - (50 * devcadeMultiplier);
             loadArrowRightX = loadArrowLeftX + loadSizeDisplacementX;
-            loadArrowTopY = loadSizeTopY - 2;
-            loadArrowBottomY = loadArrowTopY + 7 * loadSizeDisplacementY;
+            loadArrowTopY = loadSizeTopY - (2 * devcadeMultiplier);
+            loadArrowBottomY = loadArrowTopY + 7 * devcadeMultiplier * loadSizeDisplacementY;
             loadArrowPosition = new ValueTuple<int, int>(loadArrowBottomY, loadArrowLeftX);
 
-            // This initializes the start and end pixel locations for the x-axis and y-axis of the maze.
-            //mazePixelLeftX = selectedList1[2]; //REMOVE
-            //mazePixelRightX = selectedList1[3]; //REMOVE
-            //mazePixelBottomY = selectedList1[5]; //REMOVE 
-
-            // This initializes the y pixel locations for the top of the maze.
-            //mazePixelTopY = selectedList1[4]; // CONSTANT
-
-            // This initializes the y-axis start and distance between for drawing maze sizes on the loading screen.
-            //loadSizeStartY = selectedList1[7];
-            //loadSizeDisplacementY = selectedList1[8];
-
-            // This initializes the y-axis current, start, and end position of the arrow sprite in the loading screen.
-            //loadArrowCurrentY = selectedList1[9]; // This changes
-            //loadArrowStartY = selectedList1[9];
-            //loadArrowEndY = selectedList1[10];
-
-
-
-
-
-            // This initializes values need to help when drawing the border of the maze.
-            borderPixel1 = 7;
-            borderPixel2 = 4;
-            borderPixel3 = 3;
-            borderPixel4 = 407;
-
             // This initializes the y-axis positions for different strings that need to be drawn
-            drawPositionY1 = 0;
-            drawPositionY2 = 40;
-            drawPositionY3 = 70;
-            drawPositionY4 = 105;
+            drawPositionY1 = 0 * devcadeMultiplier;
+            drawPositionY2 = 40 * devcadeMultiplier;
+            drawPositionY3 = 70 * devcadeMultiplier;
+            drawPositionY4 = 105 * devcadeMultiplier;
 
             // This initializes the display texts that depend on if the game is running in Devcade.
             text3 = selectedList2[0];
             text7 = selectedList2[1];
-
-            // This initializes 3 of the texts that show the possible maze sizes.
-            //mazeSizeText1 = selectedList2[2];
-           // mazeSizeText2 = selectedList2[3];
-            //mazeSizeText3 = selectedList2[4];
 
             // These initializes the sprites/images I have that change if the game is on Devcade.
             titleFont = Content.Load<SpriteFont>(selectedList2[2]);

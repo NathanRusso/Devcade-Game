@@ -217,14 +217,15 @@ namespace DevcadeGame
             // This sets the current screen type to the loading screen.
             screenType = ScreenType.LoadingScreen;
 
-            if (windowSize.Width == 540) { devcadeMultiplier = 1; /*The game is on my computer.*/ }
-            else { devcadeMultiplier = 4; /*The game is on Devcade.*/ }
-
             // This sets up the initial button and completed maze values.
             buttonPressed = 0;
             completedMaze = false;
 
             windowSize = GraphicsDevice.Viewport.Bounds;
+
+            // This sets the devcadeMultiplier based off of the current window size.
+            if (windowSize.Width == 540) { devcadeMultiplier = 1; /*The game is on my computer.*/ }
+            else { devcadeMultiplier = 4; /*The game is on Devcade.*/ }
             
 			base.Initialize();
 	    }

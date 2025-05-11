@@ -62,38 +62,25 @@ namespace DevcadeGame
         private List<String> selectedList2;
 
         // This declares the height and width of the maze in pixels.
-        private int mazePixelHeight;
-        private int mazePixelWidth;
+        private int mazePixelHeight, mazePixelWidth;
 
         // This declares the start and end pixel locations for the x-axis and y-axis of the maze.
-        private int mazePixelLeftX;
-        private int mazePixelRightX;
-        private int mazePixelTopY;
-        private int mazePixelBottomY;
+        private int mazePixelLeftX, mazePixelRightX, mazePixelTopY, mazePixelBottomY;
 
         // This declares the middle point on the x-axis.
         private int screenPixelXCenter;
 
         // This declares the y-axis start and distance between for drawing maze sizes on the loading screen.
-        private int loadScreenSizeStart;
-        private int loadScreenSizeDisplacement;
+        private int loadScreenSizeStart, loadScreenSizeDisplacement;
 
         // This declares the y-axis current, start, and end position of the arrow sprite in the loading screen.
-        private int loadScreenArrowCurrent;
-        private int loadScreenArrowStart;
-        private int loadScreenArrowEnd;
+        private int loadScreenArrowCurrent, loadScreenArrowStart, loadScreenArrowEnd;
 
         // This declares values need to help when drawing the border of the maze.
-        private int borderPixel1;
-        private int borderPixel2;
-        private int borderPixel3;
-        private int borderPixel4;
+        private int borderPixel1, borderPixel2, borderPixel3, borderPixel4;
 
         // This declares the y-axis positions for different strings that need to be drawn.
-        private int drawPositionY1;
-        private int drawPositionY2;
-        private int drawPositionY3;
-        private int drawPositionY4;
+        private int drawPositionY1, drawPositionY2, drawPositionY3, drawPositionY4;
 
         // A BlockGrid with a 2D array of Blocks which makes up the grid for the maze.
         private BlockGrid blockGrid1;
@@ -101,81 +88,46 @@ namespace DevcadeGame
         // This declares the block value in the grid based off of the current position.
         private Block currentBlock;
 
-        // The size of the block for the current maze, along with a smaller version.
-        private int blockSizeC;
-        private int blockSize9;
-        private int blockSize8;
-        private int blockSize1;
+        // This declares the size of the block for the maze, along with a smaller versions.
+        private int blockSize100, blockSize90, blockSize80, blockSize10;
 
-        // This declares integers used to mark drawing corners on the maze.
-        private int rightX;
-        private int leftX;
-        private int topY;
-        private int bottomY;
+        // This declares the start and end pixel locations for the player on the x-axis and y-axis of the maze.
+        private int playerPixelRightX, playerPixelLeftX, playerPixelTopY, playerPixelBottomY;
 
-        // These are integers and a string set at your current position and direction.
-        // These will change as you move.
-        private int xIndex;
-        private int yIndex;
+        // These are integers and a string set at your current position and direction. These will change as you move.
+        private int xIndex, yIndex;
         private string direction;
 
         // These are integers which will be used to convert pixel position to grid position.
-        private int convertedX;
-        private int convertedY;
+        private int convertedX, convertedY;
 
         // This declares the Texture2D needed to draw the maze lines.
         private Texture2D line;
 
         // This declares the SpriteFont needed to draw the maze title, creator name, other maze message.
-        private SpriteFont titleFont;
-        private SpriteFont creatorFont;
-        private SpriteFont otherFont;
+        private SpriteFont titleFont, creatorFont, otherFont;
 
         // This declares the Texture2Ds needed to draw the image sprites.
-        private Texture2D northArrow;
-        private Texture2D eastArrow;
-        private Texture2D southArrow;
-        private Texture2D westArrow;
-        private Texture2D startButton;
-        private Texture2D stopSign;
+        private Texture2D northArrow, eastArrow, southArrow, westArrow, startButton, stopSign;
 
         // This declares the Rectangles needed to draw the maze borders.
-        private Rectangle northRectangle;
-        private Rectangle eastRectangle;
-        private Rectangle southRectangle;
-        private Rectangle westRectangle;
+        private Rectangle northRectangle, eastRectangle, southRectangle, westRectangle;
 
         // This declares the start button and stop sign.
-        private Rectangle startRectangle;
-        private Rectangle stopRectangle;
+        private Rectangle startRectangle, stopRectangle;
 
         // This declares the different widths of different displayed text. These are used to center text.
-        private int textWidth1;
-        private int textWidth2;
-        private int textWidth3;
-        private int textWidth4;
-        private int textWidth5;
-        private int textWidth6;
-        private int textWidth7;
+        private int textWidth1, textWidth2, textWidth3, textWidth4, textWidth5, textWidth6, textWidth7;
 
         // This initializes the Vectors needed to draw the title, the creator, and other text for the game.
-        private Vector2 titleVector;
-        private Vector2 creatorVector;
-        private Vector2 selectionVector;
-        private Vector2 directionVector;
-        private Vector2 luckVector;
-        private Vector2 winVector;
-        private Vector2 restartVector;
+        private Vector2 titleVector, creatorVector, selectionVector, directionVector, luckVector, winVector, restartVector;
 
         // This declares the display texts that depend on if the game is running in Devcade.
-        private String text3;
-        private String text7;
+        private string text3, text7;
 
         // This declares 3 of the texts that show the possible maze sizes.
         // The options are slightly different depending on if the game is running in Devcade.
-        private String mazeSizeText1;
-        private String mazeSizeText2;
-        private String mazeSizeText3;
+        private string mazeSizeText1, mazeSizeText2, mazeSizeText3;
 
 
         public Game1 game
@@ -212,29 +164,29 @@ namespace DevcadeGame
              * 2 by 1, with a block size of 400 --> 1000
              */
 
-            // It sets the current and smaller block sizes based off of the current blockGrid.
-            blockSizeC = blockGrid1.GetBlockSize();
-            blockSize9 = Convert.ToInt32(blockSizeC * 0.9);
-            blockSize8 = Convert.ToInt32(blockSizeC * 0.8);
-            blockSize1 = blockSizeC - blockSize9;
+            // It sets the full and smaller block sizes based off of the current blockGrid.
+            blockSize100 = blockGrid1.GetBlockSize();
+            blockSize90 = Convert.ToInt32(blockSize100 * 0.9);
+            blockSize80 = Convert.ToInt32(blockSize100 * 0.8);
+            blockSize10 = blockSize100 - blockSize90;
 
-            // This initializes integers used to mark drawing corners on the maze.
-            rightX = mazePixelRightX - blockSize9;
-            topY = mazePixelTopY + blockSize1;
-            leftX = mazePixelLeftX + blockSize1;
-            bottomY = mazePixelBottomY - blockSize9;
+            // This initializes the start and end pixel locations for the player on the x-axis and y-axis of the maze.
+            playerPixelRightX = mazePixelRightX - blockSize90;
+            playerPixelTopY = mazePixelTopY + blockSize10;
+            playerPixelLeftX = mazePixelLeftX + blockSize10;
+            playerPixelBottomY = mazePixelBottomY - blockSize90;
 
             // This sets your starting position and direction.
-            xIndex = leftX;
-            yIndex = bottomY;
+            xIndex = playerPixelLeftX;
+            yIndex = playerPixelBottomY;
             direction = "N";
 
             // This generates a maze for blockGrid1.
             blockGrid1.GenerateMaze();
 
             // This initializes the start button and stop sign.
-            startRectangle = new Rectangle(leftX, bottomY, blockSize8, blockSize8);
-            stopRectangle = new Rectangle(rightX, topY, blockSize8, blockSize8);
+            startRectangle = new Rectangle(playerPixelLeftX, playerPixelBottomY, blockSize80, blockSize80);
+            stopRectangle = new Rectangle(playerPixelRightX, playerPixelTopY, blockSize80, blockSize80);
         }
 
 
@@ -247,6 +199,8 @@ namespace DevcadeGame
 			// Set window size if running debug (in release it will be full screen)
             // Original computer screen dimensions 420 x 980.
             // Original Devcade screen dimensions 1080 x 2560.
+            // New computer screen dimensions 540 x 960.
+            // New Devcade screen dimensions 2160 x 3840.
 			#region
 #if DEBUG
 			_graphics.PreferredBackBufferWidth = 420;
@@ -496,14 +450,14 @@ namespace DevcadeGame
             else if (screenType == ScreenType.MazeScreen) // If we are in the maze screen
             {
                 // This updates the completed variable if your make it to the end of the maze.
-                if (xIndex == rightX && yIndex == topY && completedMaze == false)
+                if (xIndex == playerPixelRightX && yIndex == playerPixelTopY && completedMaze == false)
                 {
                     completedMaze = true;
                 }
 
                 // This takes the x, y coordinates and makes each a matching value to fit in the grid.
-                convertedX = (xIndex - leftX) / blockSizeC;
-                convertedY = (yIndex - topY) / blockSizeC;
+                convertedX = (xIndex - playerPixelLeftX) / blockSize100;
+                convertedY = (yIndex - playerPixelTopY) / blockSize100;
 
                 // This initializes the block value in the grid based off of the current position.
                 currentBlock = blockGrid1.GetBlockAt(convertedY, convertedX);
@@ -516,28 +470,28 @@ namespace DevcadeGame
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickUp))
                     {
                         direction = "N";
-                        if (yIndex != topY && !currentBlock.HasNorthWall()) { yIndex -= blockSizeC; }
+                        if (yIndex != playerPixelTopY && !currentBlock.HasNorthWall()) { yIndex -= blockSize100; }
                         buttonPressed = 1;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Right) || Keyboard.GetState().IsKeyDown(Keys.D) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickRight))
                     {
                         direction = "E";
-                        if (xIndex != rightX && !currentBlock.HasEastWall()) { xIndex += blockSizeC; }
+                        if (xIndex != playerPixelRightX && !currentBlock.HasEastWall()) { xIndex += blockSize100; }
                         buttonPressed = 2;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Down) || Keyboard.GetState().IsKeyDown(Keys.S) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickDown))
                     {
                         direction = "S";
-                        if (yIndex != bottomY && !currentBlock.HasSouthWall()) { yIndex += blockSizeC; }
+                        if (yIndex != playerPixelBottomY && !currentBlock.HasSouthWall()) { yIndex += blockSize100; }
                         buttonPressed = 3;
                     }
                     else if (Keyboard.GetState().IsKeyDown(Keys.Left) || Keyboard.GetState().IsKeyDown(Keys.A) ||
                          Input.GetButtonDown(1, Input.ArcadeButtons.StickLeft))
                     {
                         direction = "W";
-                        if (xIndex != leftX && !currentBlock.HasWestWall()) { xIndex -= blockSizeC; }
+                        if (xIndex != playerPixelLeftX && !currentBlock.HasWestWall()) { xIndex -= blockSize100; }
                         buttonPressed = 4;
                     }
                 }
@@ -631,7 +585,7 @@ namespace DevcadeGame
                 }
 
                 // This initializes the current position of the arrow in the maze screen.
-                arrowPosition = new Rectangle(xIndex, yIndex, blockSize8, blockSize8);
+                arrowPosition = new Rectangle(xIndex, yIndex, blockSize80, blockSize80);
 
                 // This draws the corresponding arrow based off of the current direction and x & y position.
                 if (direction == "N") { _spriteBatch.Draw(northArrow, arrowPosition, Color.White); }

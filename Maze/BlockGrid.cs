@@ -60,13 +60,13 @@ namespace DevcadeGame
         /// </summary>
         /// <param name="_rows">The number of rows in the maze </param>
         /// <param name="_columns">The number of columns in the maze </param>
-        /// <param name="pixelWidth">The pixel width of the maze </param>
+        /// <param name="_blockSize">The pixel width of the maze </param>
         /// <returns> A BlockGrid object </returns>
-        public BlockGrid(int _rows, int _columns, int pixelWidth)
+        public BlockGrid(int _rows, int _columns, int _blockSize)
         {
             rows = _rows;
             columns = _columns;
-            blockSize = pixelWidth / _columns;
+            blockSize = _blockSize;
             blockGrid = new Block[rows, columns];
             for (int y = 0; y < rows; y++)
             {
@@ -77,12 +77,6 @@ namespace DevcadeGame
                 }
             }
         }
-
-        /// <summary>
-        /// This gets the pixel size of the blocks in the maze.
-        /// </summary>
-        /// <returns> The pixel size of the blocks in the maze. </returns>
-        public int GetBlockSize() { return blockSize; }
 
         /// <summary>
         /// This draws the inner lines of the maze, not the borders.

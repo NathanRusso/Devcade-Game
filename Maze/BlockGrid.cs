@@ -19,11 +19,24 @@ namespace DevcadeGame
     // availablePoints is  list of points that will contain all of the non used points for maze generation.
     public class BlockGrid
     {
+        // This is a coordinate object to hold the row and column of a block.
+        private struct Point
+        {
+            public int Column; public int Row;
+
+            /// <summary>
+            /// This is a coordinate object to hold the row and column of a block.
+            /// </summary>
+            /// <param name="column"> The y value </param>
+            /// <param name="row"> The x value </param>
+            public Point(int column, int row) { Column = column; Row = row; } //y, x
+        }
+
         // These are the 4 directions a player can move.
         private enum Direction { North, East, South, West };
 
         // The list of all of the points that have yet to be added to the maze.
-        private readonly List<ValueTuple<int, int>> availablePoints = new List<ValueTuple<int, int>> { };
+        private readonly List<Point> availablePoints = new List<Point> { };
 
         // This is a random object which will be used for number generation.
         private readonly Random random = new Random();
@@ -60,7 +73,7 @@ namespace DevcadeGame
                 for (int x = 0; x < columns; x++)
                 {
                     blockGrid[y, x] = new Block(y, x); // New Block
-                    availablePoints.Add(new ValueTuple<int, int>(y, x)); // New point
+                    availablePoints.Add(new Point(y, x)); // New point
                 }
             }
         }
@@ -126,7 +139,7 @@ namespace DevcadeGame
         /// </summary>
         /// <param name="point"> The point to get the Block at </param>
         /// <returns> The Block at the given coordinates </returns>
-        public Block GetBlockAt(ValueTuple<int, int> point) { return blockGrid[point.Item1, point.Item2]; }
+        private Block GetBlockAt(Point point) { return blockGrid[point.Column, point.Row]; }
 
 
         /// <summary>
@@ -134,7 +147,7 @@ namespace DevcadeGame
         /// It also removes the point from the available points.
         /// </summary>
         /// <param name="point"> The point to remove </param>
-        private void AddBlockRemovePoint(ValueTuple<int, int> point) {
+        private void AddBlockRemovePoint(Point point) {
             Block block = GetBlockAt(point);
             block.RemoveVisit();
             block.AddToTheMaze();
@@ -147,19 +160,19 @@ namespace DevcadeGame
         /// </summary>
         /// <param name="next"> The next point to check </param>
         /// <param name="visited"> The list of visited points </param>
-        private void RemoveLoop(ValueTuple<int, int> next, List<ValueTuple<int, int>> visited) {
+        private void RemoveLoop(Point next, List<Point> visited) {
             // This saves the initial length of visited
             int length = visited.Count;
 
             // This saves the index of the point after the duplicate
             int afterIndex = visited.IndexOf(next) + 1;
-            ValueTuple<int, int> after = visited[afterIndex];
+            Point after = visited[afterIndex];
 
             // This fixes the walls for the duplicated point
-            if (next.Item1 - 1 == after.Item1) { GetBlockAt(next).AddNorthWall(); }
-            else if (next.Item2 + 1 == after.Item2) { GetBlockAt(next).AddEastWall(); }
-            else if (next.Item1 + 1 == after.Item1) { GetBlockAt(next).AddSouthWall(); }
-            else if (next.Item2 - 1 == after.Item2) { GetBlockAt(next).AddWestWall(); }
+            if (next.Column - 1 == after.Column) { GetBlockAt(next).AddNorthWall(); }
+            else if (next.Row + 1 == after.Row) { GetBlockAt(next).AddEastWall(); }
+            else if (next.Column + 1 == after.Column) { GetBlockAt(next).AddSouthWall(); }
+            else if (next.Row - 1 == after.Row) { GetBlockAt(next).AddWestWall(); }
 
             // This resets all blocks after the duplicate
             for (int i = afterIndex; i < length; i++)
@@ -176,11 +189,11 @@ namespace DevcadeGame
         /// </summary>
         /// <param name="start">The starting point of the path.</param>
         /// <param name="visited">The list of visited points.</param>
-        private void GeneratePath(ValueTuple<int, int> start, List<ValueTuple<int, int>> visited) {
+        private void GeneratePath(Point start, List<Point> visited) {
             // This saves the current point and block and creates a next point
-            ValueTuple<int, int> current = start;
+            Point current = start;
             Block currentBlock = GetBlockAt(current);
-            ValueTuple<int, int> next;
+            Point next;
             Block nextBlock;
             // This loops until the current block is in the maze, the path is complete
             while (currentBlock.IsNotInTheMaze()) {
@@ -188,10 +201,10 @@ namespace DevcadeGame
                 Direction dir = (Direction) random.Next(0, 4);
 
                 // This move the maze path in the direction if possible
-                if (dir == Direction.North && current.Item1 != 0)
+                if (dir == Direction.North && current.Column != 0)
                 {
                     // This gets the next point and block in the maze
-                    next = new ValueTuple<int, int>(current.Item1 - 1, current.Item2);
+                    next = new Point(current.Column - 1, current.Row);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -218,10 +231,10 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (dir == Direction.East && current.Item2 != columns - 1) 
+                else if (dir == Direction.East && current.Row != columns - 1) 
                 {
                     // This gets the next point and block in the maze
-                    next = new ValueTuple<int, int>(current.Item1, current.Item2 + 1);
+                    next = new Point(current.Column, current.Row + 1);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -248,10 +261,10 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (dir == Direction.South && current.Item1 != rows - 1)
+                else if (dir == Direction.South && current.Column != rows - 1)
                 {
                     // This gets the next point and block in the maze
-                    next = new ValueTuple<int, int>(current.Item1 + 1, current.Item2);
+                    next = new Point(current.Column + 1, current.Row);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -278,10 +291,10 @@ namespace DevcadeGame
                     current = next;
                     currentBlock = nextBlock;
                 }
-                else if (dir == Direction.West && current.Item2 != 0)
+                else if (dir == Direction.West && current.Row != 0)
                 {
                     // This gets the next point and block in the maze
-                    next = new ValueTuple<int, int>(current.Item1, current.Item2 - 1);
+                    next = new Point(current.Column, current.Row - 1);
                     nextBlock = GetBlockAt(next);
 
                     // This decides what to do with the next block
@@ -319,7 +332,7 @@ namespace DevcadeGame
             // This gets the start index, a random integer from 0 to the number of available points - 1
             // This then gets the first point to start the maze generation using the first index
             int firstIndex = random.Next(0, availablePoints.Count);
-            ValueTuple<int, int> firstPoint = availablePoints[firstIndex];
+            Point firstPoint = availablePoints[firstIndex];
 
             // This adds the first block to the maze and removes the first point from the available points
             GetBlockAt(firstPoint).AddToTheMaze();
@@ -329,10 +342,10 @@ namespace DevcadeGame
             while (availablePoints.Count > 0)
             {
                 // This gets a start point for the new path in the maze.
-                ValueTuple<int, int> startPoint = availablePoints[random.Next(0, availablePoints.Count)];
+                Point startPoint = availablePoints[random.Next(0, availablePoints.Count)];
 
                 // This will hold the points in the maze that will be added in as a new path
-                List<ValueTuple<int, int>> visitedPoints = new List<ValueTuple<int, int>> { startPoint};
+                List<Point> visitedPoints = new List<Point> { startPoint};
 
                 // This marks the start point as visited
                 GetBlockAt(startPoint).AddVisit();

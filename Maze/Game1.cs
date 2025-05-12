@@ -422,7 +422,7 @@ namespace DevcadeGame
                         if (loadArrowPosition.Item1 == loadArrowTopY) { InitializeMaze(80, 50); }
                         else if (loadArrowPosition.Item1 == loadArrowTopY + loadSizeDisplacementY) { InitializeMaze(61, 38); }
                         else if (loadArrowPosition.Item1 == loadArrowTopY + 2 * loadSizeDisplacementY) { InitializeMaze(44, 27); }
-                        else if (loadArrowPosition.Item1 == loadArrowTopY + 3 * loadSizeDisplacementY) { InitializeMaze(32, 20); }
+                        else if (loadArrowPosition.Item1 == loadArrowTopY + 3 * loadSizeDisplacementY) { InitializeMaze(36, 22); }
                         else if (loadArrowPosition.Item1 == loadArrowTopY + 4 * loadSizeDisplacementY) { InitializeMaze(25, 15); }
                         else if (loadArrowPosition.Item1 == loadArrowTopY + 5 * loadSizeDisplacementY) { InitializeMaze(16, 10); }
                         else if (loadArrowPosition.Item1 == loadArrowTopY + 6 * loadSizeDisplacementY) { InitializeMaze(8, 5); }

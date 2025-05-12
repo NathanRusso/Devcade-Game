@@ -58,7 +58,7 @@ namespace DevcadeGame
         private Vector2 sizePosition_50_31; // 800x496 -> 3200x1984
         private Vector2 sizePosition_44_27; // 792x486 -> 3168x1944
         private Vector2 sizePosition_40_25; // 800x500 -> 3200x2000
-        private Vector2 sizePosition_32_20; // 800x500 -> 3200x2000
+        private Vector2 sizePosition_36_22; // 792x484 -> 3168x1936
         private Vector2 sizePosition_30_19; // 780x486 -> 3120x1944
         private Vector2 sizePosition_25_15; // 800x480 -> 3200x1920
         private Vector2 sizePosition_20_12; // 800x480 -> 3200x1920
@@ -317,7 +317,7 @@ namespace DevcadeGame
             sizePosition_50_31 = new Vector2(loadSizeLeftX, loadSizeTopY + loadSizeDisplacementY);
             sizePosition_44_27 = new Vector2(loadSizeLeftX + loadSizeDisplacementX, loadSizeTopY + 2 * loadSizeDisplacementY);
             sizePosition_40_25 = new Vector2(loadSizeLeftX, loadSizeTopY + 2 * loadSizeDisplacementY);
-            sizePosition_32_20 = new Vector2(loadSizeLeftX + loadSizeDisplacementX, loadSizeTopY + 3 * loadSizeDisplacementY);
+            sizePosition_36_22 = new Vector2(loadSizeLeftX + loadSizeDisplacementX, loadSizeTopY + 3 * loadSizeDisplacementY);
             sizePosition_30_19 = new Vector2(loadSizeLeftX, loadSizeTopY + 3 * loadSizeDisplacementY);
             sizePosition_25_15 = new Vector2(loadSizeLeftX + loadSizeDisplacementX, loadSizeTopY + 4 * loadSizeDisplacementY);
             sizePosition_20_12 = new Vector2(loadSizeLeftX, loadSizeTopY + 4 * loadSizeDisplacementY);
@@ -528,7 +528,7 @@ namespace DevcadeGame
                 _spriteBatch.DrawString(otherFont, "50 by 31", sizePosition_50_31, Color.White);
                 _spriteBatch.DrawString(otherFont, "44 by 27", sizePosition_44_27, Color.White);
                 _spriteBatch.DrawString(otherFont, "40 by 25", sizePosition_40_25, Color.White);
-                _spriteBatch.DrawString(otherFont, "32 by 20", sizePosition_32_20, Color.White);
+                _spriteBatch.DrawString(otherFont, "36 by 22", sizePosition_36_22, Color.White);
                 _spriteBatch.DrawString(otherFont, "30 by 19", sizePosition_30_19, Color.White);
                 _spriteBatch.DrawString(otherFont, "25 by 15", sizePosition_25_15, Color.White);
                 _spriteBatch.DrawString(otherFont, "20 by 12", sizePosition_20_12, Color.White);

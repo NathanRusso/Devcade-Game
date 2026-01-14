@@ -266,7 +266,7 @@ namespace DevcadeGame
             loadArrowLeftX = loadSizeLeftX - (50 * devcadeMultiplier);
             loadArrowRightX = loadArrowLeftX + loadSizeDisplacementX;
             loadArrowTopY = loadSizeTopY - (2 * devcadeMultiplier);
-            loadArrowBottomY = loadArrowTopY + 7 * devcadeMultiplier * loadSizeDisplacementY;
+            loadArrowBottomY = loadArrowTopY + 7 * loadSizeDisplacementY;
             loadArrowPosition = new ValueTuple<int, int>(loadArrowBottomY, loadArrowLeftX);
 
             // This initializes the y-axis positions for different strings that need to be drawn
